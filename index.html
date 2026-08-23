@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kıvanç Karademir</title>
+<meta name="description" content="Kıvanç Karademir — kişisel portföy.">
+
+<!-- JavaScript çalışıyorsa <html> etiketine "js" sınıfı eklenir.
+     Belirme efekti yalnızca bu sınıf varken devreye girer; böylece
+     JavaScript kapalıysa içerik gizli kalmaz, olduğu gibi görünür. -->
+<script>document.documentElement.className = 'js';</script>
+
+<style>
+/* ==========================================================================
+   DEĞİŞKENLER
+   Tüm renkler ve ölçüler burada.
+   ========================================================================== */
+:root {
+  --zemin:        #f4f6f9;   /* çok açık soğuk gri-beyaz */
+  --zemin-2:      #eceff4;   /* bir tık koyu — video alanı gibi yüzeyler */
+  --metin:        #101f3c;   /* koyu mürekkep laciverti */
+  --metin-soluk:  #5a6a83;   /* ikincil yazı — soğuk gri */
+  --cizgi:        #d5dce6;   /* ince ayraç çizgileri */
+  --vurgu:        #0b5fff;   /* elektrik mavisi — YALNIZCA rakamlarda */
+
+  --sutun:        700px;     /* okuma sütunu genişliği */
+  --kenar:        28px;      /* sayfa kenar boşluğu */
+
+  /* Tek bir sans-serif aile — serif yok, hepsi sistemde hazır */
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+          Helvetica, Arial, sans-serif;
+}
+
+/* ==========================================================================
+   TEMEL
+   ========================================================================== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--zemin);
+  color: var(--metin);
+  font-family: var(--sans);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Okuma sütunu — içerik sayfaya yayılmaz, ortada dar bir kolonda durur */
+.sutun {
+  width: 100%;
+  max-width: var(--sutun);
+  margin: 0 auto;
+  padding: 0 var(--kenar);
+}
+
+/* Gövde metni: satır uzunluğu 68 karakteri geçmez */
+p { max-width: 68ch; }
+
+a { color: inherit; }
+
+a:focus-visible { outline: 2px solid var(--metin); outline-offset: 3px; }
+
+/* Yer tutucu metinler — doldurunca bu sınıfı sil, yazı normale döner */
+.yer-tutucu { color: var(--metin-soluk); }
+
+/* ==========================================================================
+   VURGU KURALI  ————————————————————————————————————————————————
+   Vurgu rengi SADECE sayısal değerlerde kullanılır. Başlıkta, bağlantıda,
+   çizgide, ikonda kullanılmaz. Kural tek bir sınıfta toplandı: .sayi
+   Sayfaya yeni bir rakam eklerken bu sınıfı ver, rengi kendi gelir.
+   ========================================================================== */
+.sayi {
+  color: var(--vurgu);
+  font-variant-numeric: tabular-nums;   /* rakamlar eşit genişlikte hizalanır */
+  font-feature-settings: "tnum" 1;
+}
+
+/* ==========================================================================
+   TİPOGRAFİ ÖLÇEĞİ
+   Büyüklük sırası:  1) ad   2) metrik rakamları   3) bölüm başlıkları
+   ========================================================================== */
+h1 {
+  font-size: clamp(2.6rem, 8.5vw, 4.6rem);
+  font-weight: 650;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+h2 {
+  font-size: clamp(1.45rem, 3.4vw, 1.95rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Küçük teknik etiketler — "01 — HAKKIMDA", "PROBLEM", "SONUÇ" */
+.etiket {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--metin-soluk);
+  display: block;
+  margin-bottom: 14px;
+}
+
+/* ==========================================================================
+   BÖLÜM ARALIKLARI
+   ========================================================================== */
+.bolum { padding-bottom: clamp(80px, 12vh, 124px); }
+
+.bolum > .sutun { padding-top: clamp(80px, 12vh, 124px); }
+
+/* Ayraç çizgisi metnin kenarını takip eder, sütun dolgusunu değil */
+.bolum + .bolum > .sutun { position: relative; }
+.bolum + .bolum > .sutun::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: var(--kenar);
+  right: var(--kenar);
+  height: 1px;
+  background: var(--cizgi);
+}
+
+.bolum-basi { margin-bottom: 40px; }
+
+/* ==========================================================================
+   ÜST BÖLÜM + METRİKLER — ikisi birlikte ilk ekranı doldurur
+   Metrikler kaydırmadan görünsün diye aynı tam ekran bloğun içindeler.
+   ========================================================================== */
+.ust {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 0 32px;
+}
+
+/* Profil fotoğrafı — dairesel, ölçülü boyutta */
+.profil {
+  /* Genişlik ve yükseklik aynı değer — tam daire için ikisi de gerekli */
+  width:  clamp(88px, 14vw, 116px);
+  height: clamp(88px, 14vw, 116px);
+  border-radius: 50%;
+  object-fit: cover;
+  /* Fotoğraf dikey; yüz üst tarafta kaldığı için kırpma noktasını
+     yukarı çektim. Yüz ortalanmıyorsa bu yüzdeyi değiştir. */
+  object-position: 50% 22%;
+  display: block;
+  margin-bottom: 30px;
+}
+
+.ust h1 { margin-bottom: 18px; }
+
+/* Tek satırlık tanıtım cümlesi */
+.tanitim {
+  font-size: clamp(1.02rem, 2.4vw, 1.22rem);
+  line-height: 1.5;
+  color: var(--metin-soluk);
+  max-width: 42ch;
+}
+
+/* ==========================================================================
+   METRİK ŞERİDİ — üç metrik yan yana, aralarında ince dikey ayraç
+   Rakamlar sayfadaki en büyük ikinci öğe.
+   ========================================================================== */
+.metrikler {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: clamp(40px, 7vh, 66px);
+  border-top: 1px solid var(--cizgi);
+  padding-top: 26px;
+}
+
+.metrik { padding-right: 16px; }
+
+/* Dikey ayraçlar — yalnızca 2. ve 3. metriğin soluna */
+.metrik + .metrik {
+  border-left: 1px solid var(--cizgi);
+  padding-left: clamp(14px, 3vw, 26px);
+}
+
+.metrik-sayi {
+  display: block;
+  font-size: clamp(2rem, 6.5vw, 3.3rem);   /* ikinci en büyük öğe */
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin-bottom: 8px;
+}
+
+.metrik-aciklama {
+  display: block;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--metin-soluk);
+  letter-spacing: 0.01em;
+}
+
+/* Aşağı kaydırma işareti */
+.kaydir {
+  margin-top: clamp(32px, 6vh, 54px);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--metin-soluk);
+  text-decoration: none;
+  width: fit-content;
+}
+.kaydir::after {
+  content: "";
+  width: 1px;
+  height: 34px;
+  background: var(--cizgi);
+  display: block;
+}
+.kaydir:hover { color: var(--metin); }
+.kaydir:hover::after { background: var(--metin); }
+
+/* ==========================================================================
+   PROJELER — her proje: ad / problem / ne yaptım / sonuç
+   ========================================================================== */
+.proje-liste { list-style: none; }
+
+.proje { padding: 30px 0; border-top: 1px solid var(--cizgi); }
+.proje:last-child { border-bottom: 1px solid var(--cizgi); }
+
+.proje-ust {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.proje-yil { font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
+
+/* Problem / Yaptığım satırları — solda etiket, sağda tek satırlık metin */
+.proje-detay { display: grid; gap: 8px; margin-bottom: 18px; }
+
+@media (min-width: 620px) {
+  .proje-detay { grid-template-columns: 96px 1fr; gap: 8px 20px; }
+}
+
+.proje-detay dt {
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--metin-soluk);
+  padding-top: 3px;
+}
+.proje-detay dd { font-size: 0.95rem; color: var(--metin-soluk); }
+
+/* SONUÇ satırı — rakam vurgu renginde ve kalın */
+.sonuc {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--cizgi);
+}
+
+.sonuc-etiket {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--metin-soluk);
+}
+
+.sonuc-sayi { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+
+.sonuc-metin { font-size: 0.95rem; color: var(--metin-soluk); }
+
+/* ==========================================================================
+   VİDEO — 16:9 oranı korunur, mobilde taşmaz
+   ========================================================================== */
+.video-cerceve {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--zemin-2);
+  border: 1px solid var(--cizgi);
+  overflow: hidden;
+}
+
+/* Gömülen iframe çerçeveyi tam doldurur */
+.video-cerceve iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Video kimliği henüz girilmediğinde görünen boş alan */
+.video-bos {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  color: var(--metin-soluk);
+}
+
+/* Eski tarayıcılar aspect-ratio bilmiyorsa oran yine korunur */
+@supports not (aspect-ratio: 16 / 9) {
+  .video-cerceve { position: relative; padding-top: 56.25%; height: 0; }
+  .video-cerceve > * { position: absolute; inset: 0; }
+}
+
+/* ==========================================================================
+   YETKİNLİKLER — üç grup: Analiz, Süreç, Satış
+   ========================================================================== */
+.yetkinlik-grup { padding: 24px 0; border-top: 1px solid var(--cizgi); }
+.yetkinlik-grup:last-child { border-bottom: 1px solid var(--cizgi); }
+
+.yetkinlik-grup h3 { margin-bottom: 10px; }
+
+.yetkinlik-grup ul { list-style: none; display: grid; gap: 6px; }
+
+.yetkinlik-grup li {
+  font-size: 0.95rem;
+  color: var(--metin-soluk);
+  padding-left: 16px;
+  position: relative;
+}
+.yetkinlik-grup li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.68em;
+  width: 6px;
+  height: 1px;
+  background: var(--cizgi);
+}
+
+/* ==========================================================================
+   İLETİŞİM
+   ========================================================================== */
+.iletisim-liste { list-style: none; margin-top: 8px; }
+
+.iletisim-liste li { padding: 16px 0; border-top: 1px solid var(--cizgi); }
+.iletisim-liste li:last-child { border-bottom: 1px solid var(--cizgi); }
+
+.iletisim-liste .ad {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--metin-soluk);
+  margin-bottom: 3px;
+}
+
+.iletisim-liste a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--cizgi);
+  padding-bottom: 2px;
+  transition: border-color 0.18s ease;
+}
+.iletisim-liste a:hover { border-color: var(--metin); }
+
+/* ==========================================================================
+   ALT BİLGİ
+   ========================================================================== */
+.alt {
+  padding: 48px 0 64px;
+  font-size: 0.76rem;
+  letter-spacing: 0.06em;
+  color: var(--metin-soluk);
+  border-top: 1px solid var(--cizgi);
+}
+
+/* ==========================================================================
+   BELİRME EFEKTİ — bölüm ekrana girince bir kez yumuşakça belirir
+   ========================================================================== */
+.js .belir {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.js .belir.gorunur { opacity: 1; transform: none; }
+
+/* ==========================================================================
+   MOBİL
+   ========================================================================== */
+@media (max-width: 640px) {
+  :root { --kenar: 20px; }
+  body { font-size: 16px; }
+  .metrik-aciklama { font-size: 0.72rem; }
+  .proje-ust { flex-direction: column; gap: 2px; }
+  .sonuc { gap: 8px; }
+}
+
+/* Hareket azaltma tercihi — tüm geçişleri kapat, içerik direkt görünsün */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+  .js .belir { opacity: 1; transform: none; }
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+  <!-- ========================================================================
+       BÖLÜM 1 — ÜST BÖLÜM + METRİKLER (İLK EKRAN)
+       Profil fotoğrafı, ad, tanıtım cümlesi ve hemen altında üç metrik.
+       İkisi de aynı tam ekran bloğun içinde; metrikler kaydırmadan görünür.
+       Fotoğraf: profil.jpg — kırpma noktası CSS'te .profil > object-position
+       ======================================================================== -->
+  <section class="ust" id="ust">
+    <div class="sutun">
+      <img class="profil" src="profil.jpg" alt="Kıvanç Karademir'in portre fotoğrafı" width="116" height="116">
+
+      <h1>Kıvanç Karademir</h1>
+
+      <p class="tanitim yer-tutucu">
+        Buraya seni tek cümlede anlatan güçlü bir tanıtım gelecek.
+      </p>
+
+      <!-- METRİKLER — üç tane. Rakamlara .sayi sınıfı verildiği için
+           vurgu rengini otomatik alırlar. Yeni metrik eklersen
+           .metrikler ızgarasındaki sütun sayısını da güncelle. -->
+      <div class="metrikler">
+        <div class="metrik">
+          <span class="metrik-sayi sayi">XX</span>
+          <span class="metrik-aciklama yer-tutucu">Birinci metriğin kısa açıklaması</span>
+        </div>
+        <div class="metrik">
+          <span class="metrik-sayi sayi">XX</span>
+          <span class="metrik-aciklama yer-tutucu">İkinci metriğin kısa açıklaması</span>
+        </div>
+        <div class="metrik">
+          <span class="metrik-sayi sayi">%XX</span>
+          <span class="metrik-aciklama yer-tutucu">Üçüncü metriğin kısa açıklaması</span>
+        </div>
+      </div>
+
+      <a class="kaydir" href="#hakkimda">Aşağı</a>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BÖLÜM 2 — HAKKIMDA
+       İki paragraf. Metni doldurunca "yer-tutucu" sınıflarını sil.
+       ======================================================================== -->
+  <section class="bolum belir" id="hakkimda">
+    <div class="sutun">
+      <div class="bolum-basi">
+        <span class="etiket"><span class="sayi">01</span> &nbsp;— Hakkımda</span>
+        <h2>Kısa bir tanışma</h2>
+      </div>
+
+      <p class="yer-tutucu" style="margin-bottom: 18px;">
+        Birinci paragraf yer tutucusu. Ne iş yaptığın, kaç yıldır bu alanda
+        olduğun ve hangi sektörlerde çalıştığın buraya yazılacak.
+      </p>
+      <p class="yer-tutucu">
+        İkinci paragraf yer tutucusu. Çalışma tarzın, seni ayıran yanların
+        ve şu an ilgilendiğin konular buraya yazılacak.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BÖLÜM 3 — PROJELER
+       Her proje dört parçadan oluşur:
+         ad  /  PROBLEM (tek satır)  /  YAPTIĞIM (tek satır)  /  SONUÇ (rakam)
+       Yeni proje eklemek için bir <li class="proje"> bloğunu kopyala.
+       ======================================================================== -->
+  <section class="bolum belir" id="projeler">
+    <div class="sutun">
+      <div class="bolum-basi">
+        <span class="etiket"><span class="sayi">02</span> &nbsp;— Projeler</span>
+        <h2>Seçilmiş işler</h2>
+      </div>
+
+      <ul class="proje-liste">
+
+        <!-- PROJE 1 -->
+        <li class="proje">
+          <div class="proje-ust">
+            <h3 class="yer-tutucu">Proje Adı 1</h3>
+            <span class="proje-yil sayi">20XX</span>
+          </div>
+          <dl class="proje-detay">
+            <dt>Problem</dt>
+            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
+            <dt>Yaptığım</dt>
+            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
+          </dl>
+          <p class="sonuc">
+            <span class="sonuc-etiket">Sonuç</span>
+            <span class="sonuc-sayi sayi">%XX</span>
+            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
+          </p>
+        </li>
+
+        <!-- PROJE 2 -->
+        <li class="proje">
+          <div class="proje-ust">
+            <h3 class="yer-tutucu">Proje Adı 2</h3>
+            <span class="proje-yil sayi">20XX</span>
+          </div>
+          <dl class="proje-detay">
+            <dt>Problem</dt>
+            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
+            <dt>Yaptığım</dt>
+            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
+          </dl>
+          <p class="sonuc">
+            <span class="sonuc-etiket">Sonuç</span>
+            <span class="sonuc-sayi sayi">XX</span>
+            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
+          </p>
+        </li>
+
+        <!-- PROJE 3 -->
+        <li class="proje">
+          <div class="proje-ust">
+            <h3 class="yer-tutucu">Proje Adı 3</h3>
+            <span class="proje-yil sayi">20XX</span>
+          </div>
+          <dl class="proje-detay">
+            <dt>Problem</dt>
+            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
+            <dt>Yaptığım</dt>
+            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
+          </dl>
+          <p class="sonuc">
+            <span class="sonuc-etiket">Sonuç</span>
+            <span class="sonuc-sayi sayi">XX</span>
+            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
+          </p>
+        </li>
+
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BÖLÜM 4 — VİDEO
+       Alan 16:9 oranında, mobilde taşmaz.
+       >>> VİDEO KİMLİĞİNİ DEĞİŞTİRMEK İÇİN: sayfanın en altındaki script
+           bloğunda "VIDEO_KIMLIGI" satırını düzenle. Tek yer orası. <<<
+       ======================================================================== -->
+  <section class="bolum belir" id="video">
+    <div class="sutun">
+      <div class="bolum-basi">
+        <span class="etiket"><span class="sayi">03</span> &nbsp;— Video</span>
+        <h2>Tanıtım videosu</h2>
+      </div>
+
+      <div class="video-cerceve" id="video-cerceve">
+        <!-- Video kimliği girilene kadar bu boş alan görünür.
+             Kimlik girildiğinde script bu alanı iframe ile değiştirir. -->
+        <div class="video-bos">Video kimliği girildiğinde burada oynatılacak</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BÖLÜM 5 — YETKİNLİKLER
+       Üç grup: Analiz, Süreç, Satış. Madde eklemek için <li> kopyala.
+       ======================================================================== -->
+  <section class="bolum belir" id="yetkinlikler">
+    <div class="sutun">
+      <div class="bolum-basi">
+        <span class="etiket"><span class="sayi">04</span> &nbsp;— Yetkinlikler</span>
+        <h2>Ne yapabilirim</h2>
+      </div>
+
+      <!-- YETKİNLİK GRUBU 1 — ANALİZ -->
+      <div class="yetkinlik-grup">
+        <h3>Analiz</h3>
+        <ul class="yer-tutucu">
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+        </ul>
+      </div>
+
+      <!-- YETKİNLİK GRUBU 2 — SÜREÇ -->
+      <div class="yetkinlik-grup">
+        <h3>Süreç</h3>
+        <ul class="yer-tutucu">
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+        </ul>
+      </div>
+
+      <!-- YETKİNLİK GRUBU 3 — SATIŞ -->
+      <div class="yetkinlik-grup">
+        <h3>Satış</h3>
+        <ul class="yer-tutucu">
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+          <li>Yetkinlik maddesi</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       BÖLÜM 6 — İLETİŞİM
+       E-posta HTML içinde düz yazılmıyor; en alttaki script parçalardan
+       birleştiriyor. Adresi değiştirmek için oradaki iki değişkeni düzenle.
+       ======================================================================== -->
+  <section class="bolum belir" id="iletisim">
+    <div class="sutun">
+      <div class="bolum-basi">
+        <span class="etiket"><span class="sayi">05</span> &nbsp;— İletişim</span>
+        <h2>Bana ulaş</h2>
+      </div>
+
+      <p class="yer-tutucu">Buraya kısa bir davet cümlesi gelecek.</p>
+
+      <ul class="iletisim-liste">
+        <li>
+          <span class="ad">E-posta</span>
+          <!-- Bu alan JavaScript ile doldurulur. Kapalıysa aşağıdaki
+               yedek metin görünür, adres yine de sızmaz. -->
+          <span id="eposta-alani" class="yer-tutucu">e-posta adresi yükleniyor…</span>
+        </li>
+        <li>
+          <span class="ad">LinkedIn</span>
+          <!-- href kısmını kendi profil adresinle değiştir -->
+          <a href="https://www.linkedin.com/in/kullanici-adi/" target="_blank" rel="noopener noreferrer">
+            <span class="yer-tutucu">linkedin.com/in/kullanici-adi</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<!-- ==========================================================================
+     ALT BİLGİ
+     ========================================================================== -->
+<footer class="alt">
+  <div class="sutun">© <span class="sayi">2026</span> Kıvanç Karademir</div>
+</footer>
+
+<script>
+/* ==========================================================================
+   1) VİDEO
+   >>> DEĞİŞTİRİLECEK TEK YER BURASI <<<
+   YouTube adresindeki "watch?v=" sonrasındaki kimliği tırnak arasına yaz.
+   Örnek adres:  https://www.youtube.com/watch?v=AbCdEf12345
+   Örnek kimlik: AbCdEf12345
+   Boş bırakılırsa sayfada boş çerçeve görünür, hata vermez.
+   ========================================================================== */
+var VIDEO_KIMLIGI = '';
+
+(function () {
+  if (!VIDEO_KIMLIGI) return;               /* kimlik yoksa boş alan kalsın */
+
+  var cerceve = document.getElementById('video-cerceve');
+  if (!cerceve) return;
+
+  var iframe = document.createElement('iframe');
+  /* nocookie alan adı: izleyici videoyu oynatmadan çerez yazılmaz */
+  iframe.src = 'https://www.youtube-nocookie.com/embed/' + VIDEO_KIMLIGI;
+  iframe.title = 'Tanıtım videosu';
+  iframe.loading = 'lazy';
+  iframe.allow = 'accelerometer; clipboard-write; encrypted-media; picture-in-picture';
+  iframe.setAttribute('allowfullscreen', '');
+  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+
+  cerceve.textContent = '';
+  cerceve.appendChild(iframe);
+})();
+
+/* ==========================================================================
+   2) E-POSTA ADRESİNİ PARÇALARDAN KUR
+   Adres kaynak kodda tek parça hâlde geçmiyor; tarayıcı çalışırken
+   birleştiriyor. Sayfayı tarayan basit spam botları bunu göremez.
+   ADRESİ DEĞİŞTİRMEK İÇİN: aşağıdaki iki satırı düzenle.
+   ========================================================================== */
+(function () {
+  var kullanici = 'merhaba';       /* ← @ işaretinden önceki kısım */
+  var alan      = 'ornek.com';     /* ← @ işaretinden sonraki kısım */
+
+  var adres = kullanici + String.fromCharCode(64) + alan;
+  var kutu  = document.getElementById('eposta-alani');
+  if (!kutu) return;
+
+  var link = document.createElement('a');
+  link.href = 'mai' + 'lto:' + adres;
+  link.textContent = adres;
+  kutu.textContent = '';
+  kutu.classList.remove('yer-tutucu');
+  kutu.appendChild(link);
+})();
+
+/* ==========================================================================
+   3) BÖLÜM BELİRME EFEKTİ
+   Bölüm ekrana girdiğinde bir kez yumuşakça belirir. Hareket azaltma
+   tercihi açıksa hiç çalışmaz, içerik doğrudan görünür.
+   ========================================================================== */
+(function () {
+  var azHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ogeler = document.querySelectorAll('.belir');
+
+  if (azHareket || !('IntersectionObserver' in window)) {
+    for (var i = 0; i < ogeler.length; i++) ogeler[i].classList.add('gorunur');
+    return;
+  }
+
+  var gozlemci = new IntersectionObserver(function (girisler) {
+    girisler.forEach(function (giris) {
+      if (giris.isIntersecting) {
+        giris.target.classList.add('gorunur');
+        gozlemci.unobserve(giris.target);   /* efekt yalnızca bir kez */
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  ogeler.forEach(function (oge) { gozlemci.observe(oge); });
+})();
+</script>
+
+</body>
+</html>

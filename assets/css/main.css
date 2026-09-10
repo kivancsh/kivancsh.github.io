@@ -1,0 +1,556 @@
+/* ============================================================================
+   Kıvanç Karademir: kişisel site
+   ----------------------------------------------------------------------------
+   Palet portreden ölçüldü (docs/BRIEF.md):
+     gece     #0F1523  takım elbisenin laciverti, filmin zemini
+     kağıt    #EAF0F2  gömlek ve sabah göğü, sayfanın zemini
+     havuz    #1A7FAE  havuz mavisi. SADECE rakamlarda kullanılır (.num)
+   Tipografi: Archivo (değişken genişlik). Başlıklar dar ve ağır,
+   rakamlar geniş ve ince: aynı ailenin iki ucu.
+   Şekil kuralı: levhalar ve görseller 14px köşe, etkileşimli öğeler hap.
+   ========================================================================== */
+
+:root {
+  --night: #0F1523;
+  --night-2: #172035;
+  --bone: #E6EDF1;
+  --bone-soft: #93A0AE;
+  --paper: #EAF0F2;
+  --ink: #0F1523;
+  --ink-soft: #4F5B69;
+  --pool: #1A7FAE;
+  --pool-night: #7CCBF2;
+  --plate-light: #F8FAFB;
+
+  /* tema rolleri (açık mod) */
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--pool);
+  --line: color-mix(in oklab, var(--fg) 14%, transparent);
+  --plate: var(--plate-light);
+
+  --font: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --r: 14px;
+
+  --gutter: clamp(1.25rem, 4.4vw, 4.75rem);
+  --section: clamp(6rem, 13vw, 13rem);
+  --maxw: 92rem;
+  --horizon: 56svh;
+
+  /* scrollcraft motor jetonları: motor kendi yüzeylerini bunlarla boyar */
+  --sc-canvas: var(--bg);
+  --sc-ink: var(--fg);
+  --sc-ink-soft: var(--fg-soft);
+  --sc-accent: var(--fg);
+  --sc-accent-ink: var(--bg);
+  --sc-font-display: var(--font);
+  --sc-font-text: var(--font);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--night);
+    --fg: var(--bone);
+    --fg-soft: var(--bone-soft);
+    --accent: var(--pool-night);
+    --plate: #EEF2F4;
+  }
+}
+
+.is-mobile { --horizon: 40svh; }
+
+/* ------------------------------------------------------------------ temel -- */
+html { scroll-behavior: auto; background: var(--bg); }
+body {
+  font-family: var(--font);
+  font-size: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+  background: var(--bg);
+  color: var(--fg);
+  font-stretch: 100%;
+  font-optical-sizing: auto;
+}
+::selection { background: var(--fg); color: var(--bg); }
+:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 6px; }
+a { color: inherit; text-decoration: none; }
+strong { font-weight: 700; color: var(--fg); }
+h1, h2, h3, h4, p, ul, ol, dl, dd, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin-inline: auto; padding-inline: var(--gutter); }
+.num { color: var(--accent); font-variant-numeric: tabular-nums lining-nums; }
+
+.skip {
+  position: fixed; left: var(--gutter); top: 0.75rem; z-index: 100;
+  padding: 0.6rem 1rem; border-radius: 999px; background: var(--bone); color: var(--night);
+  transform: translateY(-160%); transition: transform 240ms var(--ease);
+}
+.skip:focus-visible { transform: none; }
+
+.display {
+  font-size: clamp(3.4rem, 9.6vw, 10.5rem);
+  font-weight: 800;
+  font-stretch: 72%;
+  line-height: 0.88;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+/* Satır maskeleri: her satır kendi yarığından yükselir */
+.ln { display: block; overflow: hidden; padding-bottom: 0.13em; margin-bottom: -0.13em; }
+.ln__i { display: inline-block; }
+.film .ln__i { will-change: transform, opacity; }
+
+/* ---------------------------------------------------------------- açılış -- */
+.loader {
+  position: fixed; inset: 0; z-index: 90;
+  background: var(--night); color: var(--bone);
+  transition: opacity 1100ms var(--ease), visibility 0s linear 1100ms;
+}
+.loader__line {
+  position: absolute; left: 0; right: 0; top: var(--horizon);
+  height: 1px; transform: translateY(-0.5px);
+}
+.loader__fill {
+  position: absolute; inset: 0;
+  background: color-mix(in oklab, var(--bone) 88%, transparent);
+  transform: scaleX(var(--load, 0)); transform-origin: 50% 50%;
+  transition: transform 400ms var(--ease);
+}
+.loader__meta {
+  position: absolute; left: var(--gutter); right: var(--gutter);
+  top: calc(var(--horizon) + 1.1rem);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 0.875rem; color: var(--bone-soft); letter-spacing: 0;
+  transition: opacity 500ms var(--ease);
+}
+.loader__pct { font-variant-numeric: tabular-nums; font-stretch: 110%; }
+.loader__pct::after { content: "%"; margin-left: 0.1em; }
+.loader.is-done { opacity: 0; visibility: hidden; }
+.loader.is-done .loader__meta { opacity: 0; }
+html:not(.js) .loader, .is-reduced .loader { display: none; }
+
+/* ------------------------------------------------------------------- menü -- */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 60;
+  height: calc(4.25rem + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) var(--gutter) 0;
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--bone);
+  transition: color 500ms var(--ease), background-color 500ms var(--ease), backdrop-filter 500ms var(--ease);
+}
+.nav[data-tone="day"] { color: var(--fg); }
+.nav.is-solid {
+  background: color-mix(in oklab, var(--bg) 80%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  backdrop-filter: blur(14px) saturate(1.1);
+}
+.nav__mark { font-weight: 700; font-stretch: 88%; font-size: 1.02rem; letter-spacing: -0.01em; }
+.nav__links { display: flex; gap: clamp(1.25rem, 2.2vw, 2.25rem); }
+.nav__links a, .foot__top {
+  position: relative; font-size: 0.95rem; font-weight: 500; padding-block: 0.4rem;
+}
+.nav__links a::after, .foot__top::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0.1rem; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: 100% 50%;
+  transition: transform 520ms var(--ease);
+}
+.nav__links a:hover::after, .nav__links a[aria-current="true"]::after, .foot__top:hover::after {
+  transform: scaleX(1); transform-origin: 0 50%;
+}
+.nav__toggle {
+  display: none; border: 1px solid currentColor; background: none; color: inherit;
+  border-radius: 999px; padding: 0.55rem 1.1rem; font-size: 0.95rem; font-weight: 500; cursor: pointer;
+  min-height: 44px;
+}
+.nav__toggle:active, .close__links a:active { transform: scale(0.98); }
+
+.menu {
+  position: fixed; inset: 0; z-index: 70;
+  background: var(--night); color: var(--bone);
+  padding: calc(6rem + env(safe-area-inset-top)) var(--gutter) calc(2rem + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; justify-content: space-between;
+}
+.menu[hidden] { display: none; }
+.menu nav { display: flex; flex-direction: column; gap: 0.35rem; }
+.menu nav a {
+  font-size: clamp(2.4rem, 11vw, 3.6rem); font-weight: 800; font-stretch: 74%;
+  line-height: 1.02; letter-spacing: -0.03em; padding-block: 0.3rem;
+}
+.menu__close {
+  align-self: flex-start; border: 1px solid currentColor; background: none; color: inherit;
+  border-radius: 999px; padding: 0.7rem 1.3rem; font-size: 1rem; min-height: 48px;
+}
+
+/* ------------------------------------------------------------------- film -- */
+.film { background: var(--night); color: var(--bone); }
+.film__stage {
+  --sc-canvas: var(--night);
+  background: var(--night);
+  isolation: isolate;
+}
+.film__video, .film__poster { z-index: 0; }
+.film__video { transition: opacity 600ms var(--ease); }
+.film__still { display: none; }
+.film__scrim {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    linear-gradient(to top, color-mix(in oklab, var(--night) 72%, transparent) 0%, color-mix(in oklab, var(--night) 20%, transparent) 38%, transparent 60%),
+    linear-gradient(to right, color-mix(in oklab, var(--night) 50%, transparent) 0%, transparent 55%);
+}
+.film__veil { position: absolute; inset: 0; z-index: 2; background: var(--bg); opacity: 0; pointer-events: none; }
+.film__copy { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
+
+.scene { position: absolute; left: var(--gutter); right: var(--gutter); opacity: 0; visibility: hidden; }
+.scene.is-live { visibility: visible; }
+/* ufuk sahneleri: metin filmin ışık çizgisinin hemen üstüne oturur */
+.scene--horizon { bottom: calc(100% - var(--horizon) + clamp(0.9rem, 1.6vw, 1.6rem)); }
+.scene--low { bottom: clamp(3rem, 11vh, 8rem); max-width: min(56rem, 62vw); }
+
+.film__name {
+  font-size: clamp(4.2rem, 12.6vw, 13.8rem);
+  font-weight: 800; font-stretch: 70%;
+  line-height: 0.86; letter-spacing: -0.04em;
+}
+.film__role {
+  position: absolute; left: 0; top: calc(100% + clamp(1.8rem, 3vw, 3rem));
+  font-size: clamp(1rem, 0.9rem + 0.4vw, 1.3rem); font-weight: 500; line-height: 1.3;
+  color: var(--bone);
+}
+.film__role .ln:last-child { color: var(--bone-soft); }
+
+.scene__lead { font-size: clamp(1rem, 0.9rem + 0.4vw, 1.3rem); font-weight: 500; color: var(--bone-soft); margin-bottom: 0.9rem; }
+.question {
+  font-size: clamp(3rem, 6.6vw, 7.4rem);
+  font-weight: 800; font-stretch: 75%;
+  line-height: 0.92; letter-spacing: -0.03em;
+  max-width: 64vw;
+}
+.question .w { display: inline-block; white-space: nowrap; will-change: transform, opacity; transform-origin: 30% 70%; }
+
+.scene__title {
+  font-size: clamp(2.6rem, 5.6vw, 6.2rem);
+  font-weight: 800; font-stretch: 74%;
+  line-height: 0.92; letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.scene__title--sm { font-size: clamp(1.8rem, 3.2vw, 3.4rem); margin-top: 0.4rem; }
+.scene__text {
+  margin-top: clamp(1rem, 1.6vw, 1.6rem);
+  font-size: clamp(1.05rem, 0.95rem + 0.45vw, 1.45rem); font-weight: 450; line-height: 1.4;
+  color: var(--bone); max-width: 30em;
+}
+.film .num { color: var(--pool-night); }
+.scene__figure {
+  font-size: clamp(6rem, 17vw, 19rem);
+  font-weight: 250; font-stretch: 118%;
+  line-height: 0.82; letter-spacing: -0.04em;
+}
+.scene__figure .pct { font-size: 0.5em; font-weight: 300; margin-right: 0.04em; vertical-align: 0.55em; }
+.scene__title--dawn { color: var(--fg); font-size: clamp(3rem, 7.4vw, 8rem); }
+
+/* ------------------------------------------------------------- hakkımda -- */
+.about { padding-block: var(--section) calc(var(--section) * 0.8); }
+.about__grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2vw, 2rem);
+  align-items: start;
+}
+.about__title { grid-column: 1 / span 8; grid-row: 1; }
+.portrait {
+  grid-column: 8 / span 5; grid-row: 2;
+  position: sticky; top: 14vh; margin-top: clamp(3rem, 6vw, 6rem);
+}
+.portrait__frame {
+  position: relative; aspect-ratio: 4 / 5; border-radius: var(--r); overflow: hidden;
+  background: var(--night);
+  clip-path: inset(var(--clip, 0%) 0 0 0 round var(--r));
+}
+.portrait__img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 30% 50%;
+  transform: scale(var(--zoom, 1.2)); transform-origin: 27% 66%;
+}
+.portrait__img--mono { filter: grayscale(1) contrast(1.06); opacity: var(--mono, 0); }
+
+.about__text { grid-column: 1 / span 6; grid-row: 2; margin-top: clamp(3rem, 6vw, 6rem); }
+.about__lead {
+  font-size: clamp(1.65rem, 1.1rem + 2vw, 3rem);
+  font-weight: 500; font-stretch: 86%;
+  line-height: 1.08; letter-spacing: -0.02em;
+  color: var(--fg); margin-bottom: clamp(2rem, 3.4vw, 3.2rem);
+}
+.about__lead strong { font-weight: 800; }
+.about__text p:not(.about__lead) { color: var(--fg-soft); max-width: 36em; }
+.about__text p + p { margin-top: 1.25em; }
+.about__stance { font-size: clamp(1.15rem, 1rem + 0.5vw, 1.45rem); line-height: 1.4; }
+.about__stance strong { font-weight: 700; }
+.about__close {
+  margin-top: clamp(5rem, 11vw, 11rem);
+  font-size: clamp(2.3rem, 5.8vw, 6.6rem);
+  font-weight: 500; font-stretch: 78%;
+  line-height: 0.98; letter-spacing: -0.03em;
+  max-width: 17em; text-wrap: balance;
+}
+.about__close strong { font-weight: 800; }
+
+/* ------------------------------------------------------------ levhalar -- */
+.plate {
+  display: grid; place-items: center;
+  background: var(--plate); border-radius: var(--r);
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--ink) 6%, transparent);
+}
+.plate img { width: var(--lw, 8rem); max-width: 80%; max-height: 62%; height: auto; object-fit: contain; }
+
+/* --------------------------------------------------------------- stajlar -- */
+.roster { padding-block: clamp(4rem, 7vw, 7rem) calc(var(--section) * 0.6); }
+.roster__list { margin-top: clamp(2.5rem, 5vw, 5rem); }
+.roster__item {
+  position: relative;
+  display: grid; grid-template-columns: clamp(9rem, 13vw, 12.5rem) 1fr; align-items: center;
+  gap: clamp(1.25rem, 3vw, 3rem);
+  padding-block: clamp(1rem, 2vw, 1.75rem);
+}
+.roster__item::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line);
+  transform-origin: 0 50%;
+}
+.plate--row { aspect-ratio: 16 / 9; }
+.plate--row img { max-height: 58%; }
+.roster__name {
+  font-size: clamp(2.3rem, 6.4vw, 7rem);
+  font-weight: 800; font-stretch: 74%;
+  line-height: 0.95; letter-spacing: -0.032em;
+  transition: transform 700ms var(--ease);
+}
+
+/* ---------------------------------------------------- eğitim programları -- */
+.programs { padding-block: clamp(4rem, 7vw, 7rem) calc(var(--section) * 0.6); }
+.programs__grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.4vw, 1.25rem);
+  margin-top: clamp(2.5rem, 5vw, 5rem);
+}
+.program { display: flex; flex-direction: column; gap: 1rem; }
+.program:nth-child(2n) { margin-top: clamp(2rem, 5vw, 5.5rem); }
+.plate--tall { aspect-ratio: 3 / 4; }
+.plate--tall img { max-width: 76%; }
+.program__name { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem); font-weight: 650; font-stretch: 90%; letter-spacing: -0.01em; }
+
+/* --------------------------------------------------------- iş tecrübeleri -- */
+.work { padding-top: clamp(4rem, 7vw, 7rem); }
+.job {
+  display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+  gap: clamp(1.5rem, 4vw, 5rem);
+  padding-block: clamp(3rem, 6vw, 6rem);
+  border-top: 1px solid var(--line);
+  margin-top: clamp(2.5rem, 5vw, 5rem);
+}
+.job + .job { margin-top: 0; }
+.plate--job { aspect-ratio: 16 / 10; width: 100%; max-width: 24rem; }
+.plate--job img { max-width: 78%; }
+.job__company {
+  font-size: clamp(2.6rem, 6.2vw, 6.8rem);
+  font-weight: 800; font-stretch: 74%;
+  line-height: 0.92; letter-spacing: -0.032em;
+}
+.job__meta {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem;
+  margin-top: 1.25rem; font-size: 1rem; font-weight: 550; color: var(--fg);
+}
+.job__meta span + span { color: var(--fg-soft); }
+.job__meta .num { color: var(--accent); }
+.job__text { margin-top: 1.4rem; color: var(--fg-soft); max-width: 38em; }
+.figures { display: flex; flex-wrap: wrap; gap: clamp(2rem, 6vw, 6rem); margin-top: clamp(2rem, 3.4vw, 3rem); }
+.figure { display: flex; flex-direction: column-reverse; gap: 0.6rem; }
+.figure__label { font-size: 1rem; font-weight: 550; }
+.figure__value {
+  font-size: clamp(3rem, 6.6vw, 6.8rem);
+  font-weight: 280; font-stretch: 116%;
+  line-height: 0.86; letter-spacing: -0.035em; white-space: nowrap;
+}
+.unit { font-size: 0.3em; font-weight: 500; font-stretch: 100%; letter-spacing: 0; margin-left: 0.25em; }
+
+/* -------------------------------------- türk telekom metrikleri (şerit) -- */
+.ledger { position: relative; }
+.ledger__stage { display: flex; align-items: center; }
+.ledger__rail {
+  display: flex; align-items: stretch; width: max-content;
+  gap: 0; padding-inline: var(--gutter);
+}
+.ledger__intro {
+  width: clamp(18rem, 30vw, 30rem);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding-right: clamp(2rem, 5vw, 5rem);
+}
+.ledger__kicker { font-size: 1rem; font-weight: 650; }
+.ledger__lede {
+  margin-top: 1rem;
+  font-size: clamp(1.4rem, 1rem + 1.2vw, 2.1rem);
+  font-weight: 500; font-stretch: 88%; line-height: 1.12; letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.group {
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding-left: clamp(2rem, 3.4vw, 3.4rem); margin-left: clamp(2rem, 3.4vw, 3.4rem);
+  border-left: 1px solid var(--line);
+}
+.group__title { font-size: 1rem; font-weight: 650; margin-bottom: clamp(2.5rem, 7vh, 5rem); }
+.group__list { display: flex; gap: clamp(2.5rem, 4.4vw, 4.5rem); align-items: flex-end; }
+.metric { display: flex; flex-direction: column; width: clamp(14rem, 21vw, 21rem); }
+.metric--wide, .metric--lead { width: auto; min-width: clamp(14rem, 21vw, 21rem); }
+.metric__value {
+  font-size: clamp(4.2rem, 8.4vw, 9.4rem);
+  font-weight: 260; font-stretch: 118%;
+  line-height: 0.84; letter-spacing: -0.04em; white-space: nowrap;
+}
+.metric--lead .metric__value { font-size: clamp(5rem, 11vw, 12.5rem); }
+.metric--wide .metric__value { font-size: clamp(3.4rem, 6.2vw, 7rem); }
+.metric__label { margin-top: 1.1rem; font-size: 1.05rem; font-weight: 550; line-height: 1.3; max-width: 15em; }
+
+/* Şerit kaydırılmadığında (hareket azaltılmış ya da JS yok) metrikler
+   yana taşmaz: gruplar alt alta, metrikler satır halinde dizilir. */
+@media (min-width: 861px) {
+  .ledger:not([data-sc-act]) .ledger__rail { display: block; width: auto; max-width: var(--maxw); margin-inline: auto; }
+  .ledger:not([data-sc-act]) .ledger__intro { width: auto; max-width: 38rem; padding: 0 0 3rem; }
+  .ledger:not([data-sc-act]) .group { margin: 0 0 4.5rem; padding: 2.75rem 0 0; border-left: 0; border-top: 1px solid var(--line); }
+  .ledger:not([data-sc-act]) .group__list { flex-wrap: wrap; row-gap: 3rem; }
+}
+
+/* ---------------------------------------------------------------- kapanış -- */
+.close {
+  min-height: 100svh; display: flex; flex-direction: column; justify-content: space-between;
+  padding-top: var(--section);
+}
+.close__q {
+  font-size: clamp(3rem, 8.8vw, 10rem);
+  font-weight: 800; font-stretch: 72%;
+  line-height: 0.9; letter-spacing: -0.035em;
+  max-width: 11em; text-wrap: balance;
+}
+.close__line {
+  height: 1px; background: var(--fg); opacity: 0.4;
+  margin-block: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem);
+  transform: scaleX(var(--draw, 1)); transform-origin: 0 50%;
+}
+.close__row { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1.5rem; }
+.close__note { font-size: clamp(1.25rem, 1.05rem + 0.7vw, 1.8rem); font-weight: 500; font-stretch: 92%; letter-spacing: -0.01em; }
+.close__links { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.close__links a {
+  display: inline-flex; align-items: center; min-height: 48px;
+  padding: 0.75rem 1.4rem; border-radius: 999px; border: 1px solid var(--fg);
+  font-weight: 550; white-space: nowrap;
+  transition: background-color 300ms var(--ease), color 300ms var(--ease);
+}
+.close__links a:hover { background: var(--fg); color: var(--bg); }
+.foot {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-block: clamp(4rem, 8vw, 7rem) calc(1.75rem + env(safe-area-inset-bottom));
+  font-size: 0.9rem; color: var(--fg-soft);
+}
+
+/* ------------------------------------------------------------------- doku -- */
+.grain {
+  position: fixed; inset: 0; z-index: 75; pointer-events: none; opacity: 0.055;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1.4 -0.2'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+}
+
+/* ----------------------------------------------------- kaydırma açılımları --
+   Yalnızca JS varken ve hareket azaltılmamışken gizli başlar */
+.js:not(.is-reduced) [data-reveal="lines"] .ln__i {
+  transform: translate3d(0, 108%, 0);
+  transition: transform 1300ms var(--ease-expo);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js:not(.is-reduced) [data-reveal="lines"].is-in .ln__i { transform: none; }
+.js:not(.is-reduced) [data-reveal="fade"],
+.js:not(.is-reduced) [data-reveal="card"] {
+  opacity: 0; transform: translate3d(0, 1.4rem, 0);
+  transition: opacity 1000ms var(--ease), transform 1300ms var(--ease-expo);
+  transition-delay: calc(var(--i, 0) * 110ms);
+}
+.js:not(.is-reduced) [data-reveal="fade"].is-in,
+.js:not(.is-reduced) [data-reveal="card"].is-in { opacity: 1; transform: none; }
+/* Liste satırı: ayraç çizgisi soldan çizilir, ad maskeden çıkar */
+.js:not(.is-reduced) [data-reveal="row"]::after { transform: scaleX(0); transition: transform 1400ms var(--ease-expo); }
+.js:not(.is-reduced) [data-reveal="row"] .plate { opacity: 0; transition: opacity 900ms var(--ease) 150ms; }
+.js:not(.is-reduced) [data-reveal="row"] .roster__name { clip-path: inset(0 0 100% 0); transform: translate3d(0, 0.35em, 0); transition: clip-path 1100ms var(--ease-expo) 80ms, transform 1100ms var(--ease-expo) 80ms; }
+.js:not(.is-reduced) [data-reveal="row"].is-in::after { transform: scaleX(1); }
+.js:not(.is-reduced) [data-reveal="row"].is-in .plate { opacity: 1; }
+.js:not(.is-reduced) [data-reveal="row"].is-in .roster__name { clip-path: inset(0 0 -0.2em 0); transform: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .roster__item:hover .roster__name { transform: translate3d(0.14em, 0, 0); }
+  .program .plate { transition: transform 700ms var(--ease); }
+  .program:hover .plate { transform: translate3d(0, -4px, 0); }
+}
+
+/* ============================================================== MOBİL ===
+   Masaüstünün küçültülmüşü değil: film metinleri alt banda, liste ve
+   şerit dikey düzene, dokunma hedefleri 44px üstüne geçer.            */
+@media (max-width: 860px) {
+  .nav__links { display: none; }
+  .nav__toggle { display: inline-flex; align-items: center; }
+
+  .scene--low { left: var(--gutter); right: var(--gutter); max-width: none; bottom: calc(2.4rem + env(safe-area-inset-bottom)); }
+  .film__scrim {
+    background: linear-gradient(to top, color-mix(in oklab, var(--night) 82%, transparent) 0%, color-mix(in oklab, var(--night) 40%, transparent) 30%, transparent 52%);
+  }
+  .film__name { font-size: clamp(3.6rem, 18.5vw, 6.2rem); }
+  .question { font-size: clamp(2.4rem, 11.2vw, 3.6rem); max-width: none; }
+  .scene__title { font-size: clamp(2.2rem, 10.6vw, 3.4rem); }
+  .scene__title--sm { font-size: clamp(1.6rem, 7vw, 2.2rem); }
+  .scene__figure { font-size: clamp(5.4rem, 32vw, 9rem); }
+  .scene__title--dawn { font-size: clamp(2.6rem, 12vw, 3.8rem); }
+
+  .about__grid { display: flex; flex-direction: column; }
+  .portrait { position: relative; top: auto; margin-top: 2.5rem; width: 100%; }
+  .about__text { margin-top: 2.75rem; }
+  .about__close { margin-top: 4.5rem; }
+
+  .roster__item { grid-template-columns: 5.75rem 1fr; gap: 1.1rem; padding-block: 0.9rem; }
+  .roster__name { font-size: clamp(1.9rem, 8.6vw, 2.8rem); }
+
+  .programs__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+  .program:nth-child(2n) { margin-top: 2.25rem; }
+  .program__name { font-size: 1.05rem; }
+
+  .job { grid-template-columns: 1fr; gap: 1.75rem; padding-block: 2.75rem; }
+  .plate--job { max-width: 15rem; }
+  .figures { gap: 2rem 2.5rem; }
+
+  .ledger__rail { display: block; width: auto; padding-inline: var(--gutter); }
+  .ledger__intro { width: auto; padding: 0 0 2.5rem; }
+  .group { padding: 2.25rem 0 0; margin: 0 0 3rem; border-left: 0; border-top: 1px solid var(--line); }
+  .group__title { margin-bottom: 1.75rem; }
+  .group__list { display: grid; grid-template-columns: 1fr; gap: 2.25rem; align-items: start; }
+  .metric { width: auto; }
+  .metric__value, .metric--lead .metric__value { font-size: clamp(3.4rem, 17vw, 5rem); }
+  .metric--lead .metric__value { font-size: clamp(4.2rem, 21vw, 6.2rem); }
+  .metric--wide .metric__value { font-size: clamp(2.6rem, 12.5vw, 3.8rem); }
+  .metric__label { margin-top: 0.6rem; }
+
+  .close { min-height: 88svh; }
+  .close__row { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================= HAREKET AZALTILMIŞ / JS YOK ===
+   Film pinlenmez; afiş karesi ve bütün sahne metinleri okunur bir bölüm olur. */
+html:not(.js) .film__stage, .is-reduced .film__stage { position: relative; height: auto; min-height: 100svh; }
+html:not(.js) .film__video, .is-reduced .film__video, html:not(.js) .film__poster, .is-reduced .film__poster { display: none; }
+html:not(.js) .film__still, .is-reduced .film__still { display: block; position: absolute; inset: 0; }
+html:not(.js) .film__still img, .is-reduced .film__still img { width: 100%; height: 100%; object-fit: cover; }
+html:not(.js) .film__veil, .is-reduced .film__veil, html:not(.js) .scene--dawn, .is-reduced .scene--dawn { display: none; }
+html:not(.js) .film__copy, .is-reduced .film__copy {
+  position: relative; display: flex; flex-direction: column; gap: clamp(4rem, 9vh, 7rem);
+  padding: calc(7rem + env(safe-area-inset-top)) var(--gutter) clamp(4rem, 10vh, 7rem);
+}
+html:not(.js) .scene, .is-reduced .scene { position: relative; inset: auto; opacity: 1; visibility: visible; max-width: 60rem; }
+html:not(.js) .film__role, .is-reduced .film__role { position: static; margin-top: 1.5rem; }
+@media (prefers-reduced-motion: reduce) {
+  .nav, .roster__name, .program .plate, .close__links a { transition: none; }
+}

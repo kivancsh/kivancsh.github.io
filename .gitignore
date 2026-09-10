@@ -1,2 +1,7 @@
 # macOS
 .DS_Store
+
+# tools/ altında derlenen Swift araçları
+tools/.film
+tools/.logos
+tools/.palette

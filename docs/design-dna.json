@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "name": "landonorris.com design DNA",
+    "description": "Reference analysis for Kıvanç Karademir career site. Values read from computed styles in the live page (Browser pane, 1440x900) because node was unavailable for scripts/measure-colors.mjs; colours are exact CSS values, not eyeballed.",
+    "source_references": ["https://landonorris.com/"],
+    "created_at": "2026-09-10"
+  },
+  "design_system": {
+    "color": {
+      "palette_type": "monochromatic with single acid accent",
+      "primary": { "hex": "#282C20", "role": "dark olive ground for manifesto and hero sections" },
+      "secondary": { "hex": "#F4F4ED", "role": "off-white ground and light text" },
+      "accent": { "hex": "#D2FF00", "role": "store CTA, loader, highlights" },
+      "neutral": {
+        "scale": ["#F4F4ED", "#DDE1D2", "#B4B8A5", "#535450", "#3B3C38", "#282C20", "#111112"],
+        "usage": "light end for text on olive, #535450 for micro labels, #111112 for dark text on light"
+      },
+      "semantic": { "success": "#B2C73A", "warning": "#D2FF00", "error": "#111112", "info": "#B4B8A5" },
+      "surface": { "background": "#282C20", "card": "#F4F4ED", "elevated": "#DDE1D2" },
+      "contrast_strategy": "high contrast; alternates dark-on-light and light-on-dark full-bleed sections"
+    },
+    "typography": {
+      "type_scale": {
+        "display": { "size": "105.8px", "weight": "400", "line_height": "0.9", "tracking": "-0.83px" },
+        "heading_1": { "size": "93.3px", "weight": "700", "line_height": "0.85", "tracking": "-3.3px" },
+        "heading_2": { "size": "60px", "weight": "700", "line_height": "0.89", "tracking": "-1.67px" },
+        "heading_3": { "size": "25px", "weight": "800", "line_height": "1", "tracking": "normal" },
+        "body": { "size": "16.7px", "weight": "400", "line_height": "1.25", "tracking": "-0.17px" },
+        "body_small": { "size": "14px", "weight": "400", "line_height": "1.43", "tracking": "normal" },
+        "caption": { "size": "12px", "weight": "600", "line_height": "1.25", "tracking": "normal" },
+        "overline": { "size": "8.3px", "weight": "400", "line_height": "1", "tracking": "normal, uppercase" }
+      },
+      "font_families": { "heading": "Mona Sans Variable", "body": "Mona Sans Variable", "mono": "none (Brier used as secondary display)" },
+      "font_style_notes": "variable-width grotesk; manifesto set uppercase at huge size with tight leading; ~12x scale jump to 8px micro labels"
+    },
+    "spacing": {
+      "base_unit": "8px",
+      "scale": ["8px", "16px", "24px", "40px", "64px", "120px"],
+      "content_density": "spacious",
+      "section_rhythm": "full-viewport (900px) sections; long pinned horizontal track (3143px); total 13.6k px"
+    },
+    "layout": {
+      "grid_system": "12-column, full bleed",
+      "max_content_width": "none (edge to edge with gutters)",
+      "columns": "12",
+      "gutter": "~2.5vw",
+      "breakpoints": ["479px", "767px", "991px"],
+      "alignment_tendency": "asymmetric"
+    },
+    "shape": {
+      "border_radius": { "small": "4px", "medium": "12px", "large": "24px", "pill": "999px" },
+      "border_usage": "subtle 1px",
+      "divider_style": "rare hairlines"
+    },
+    "elevation": {
+      "shadow_style": "none",
+      "levels": { "low": "none", "medium": "none", "high": "none" },
+      "depth_cues": "overlapping layers, WebGL depth, colour intensity"
+    },
+    "iconography": { "style": "minimal line", "stroke_weight": "1.5px", "size_scale": ["16px", "24px"], "preferred_set": "custom" },
+    "motion": {
+      "easing": "expo-out for reveals, linear scrub for scroll",
+      "duration_scale": { "micro": "200ms", "normal": "600ms", "macro": "1200ms" },
+      "entrance_pattern": "line-by-line masked rise",
+      "exit_pattern": "scroll-scrubbed reversal",
+      "philosophy": "cinematic"
+    },
+    "components": {
+      "button_style": "pill, acid fill",
+      "input_style": "n/a",
+      "card_style": "full-bleed image panels on a horizontal track",
+      "navigation_pattern": "fixed minimal bar, wordmark left, pill CTA right",
+      "modal_style": "full-screen overlay menu",
+      "list_style": "big uppercase words",
+      "component_notes": "micro labels pinned to image corners; loader screen in accent colour"
+    }
+  },
+  "design_style": {
+    "aesthetic": {
+      "mood": ["energetic", "confident", "playful", "premium"],
+      "visual_metaphor": "race telemetry and a signature scrawl",
+      "era_influence": "2020s motorsport editorial",
+      "genre": "luxury editorial / athlete brand",
+      "personality_traits": ["bold", "youthful", "precise"],
+      "adjectives": ["kinetic", "oversized", "layered"]
+    },
+    "visual_language": {
+      "complexity": "moderate",
+      "ornamentation": "subtle accents",
+      "whitespace_usage": "generous",
+      "visual_weight_distribution": "heavy type blocks against quiet grounds",
+      "focal_strategy": "progressive reveal",
+      "contrast_level": "high",
+      "texture_usage": "topographic line background, grain"
+    },
+    "composition": {
+      "hierarchy_method": "scale contrast",
+      "balance_type": "asymmetric",
+      "flow_direction": "vertical with one horizontal detour",
+      "grouping_strategy": "full-viewport chapters",
+      "negative_space_role": "pacing between statements"
+    },
+    "imagery": {
+      "photo_treatment": "cut-out portraits, candid race photography",
+      "illustration_style": "hand-drawn signature lines",
+      "graphic_elements": "contour lines, helmet renders",
+      "pattern_usage": "topographic background",
+      "image_shape": "rounded rectangles and cut-outs"
+    },
+    "interaction_feel": {
+      "feedback_style": "smooth",
+      "hover_behavior": "subtle lift, image swap",
+      "transition_personality": "smooth glide",
+      "loading_style": "branded full-screen loader",
+      "microinteraction_density": "moderate"
+    },
+    "brand_voice_in_ui": {
+      "tone": "confident, personal",
+      "formality": "casual",
+      "cta_style": "direct imperative",
+      "empty_state_approach": "n/a",
+      "error_tone": "n/a"
+    }
+  },
+  "visual_effects": {
+    "overview": {
+      "effect_intensity": "heavy-immersive",
+      "performance_tier": "heavy",
+      "fallback_strategy": "static images",
+      "primary_technology": "WebGL + smooth scroll"
+    },
+    "background_effects": {
+      "type": "generative-art",
+      "description": "topographic contour lines behind hero portrait",
+      "technology": "Canvas / WebGL",
+      "params": { "color_palette": ["#DDE1D2", "#F4F4ED"], "speed": "slow", "density": "low", "opacity": "0.4", "blend_mode": "normal" }
+    },
+    "particle_systems": {
+      "enabled": false, "type": "none", "description": "none", "technology": "none",
+      "params": { "count": "0", "shape": "none", "size_range": "none", "movement_pattern": "none", "color_behavior": "none", "interaction": "none", "spawn_area": "none" }
+    },
+    "3d_elements": {
+      "enabled": true, "type": "product-viewer",
+      "description": "helmet collection rendered in WebGL",
+      "technology": "WebGL",
+      "params": { "renderer": "WebGL", "lighting": "studio", "camera": "orbit", "materials": "glossy paint", "geometry": "helmet meshes", "post_processing": ["FXAA"], "interaction_model": "hover and scroll" }
+    },
+    "shader_effects": {
+      "enabled": true, "type": "custom-GLSL",
+      "description": "image distortion on hover and reveal",
+      "technology": "WebGL",
+      "params": { "uniforms": "time, progress, pointer", "vertex_manipulation": "plane bend", "fragment_output": "image sample with offset", "noise_type": "simplex", "distortion": "wave" }
+    },
+    "scroll_effects": {
+      "parallax": { "enabled": true, "layers": "3", "depth_range": "small", "speed_curve": "linear" },
+      "scroll_triggered_animations": { "enabled": true, "trigger_points": "section entry", "animation_type": "clip-reveal", "scrub_behavior": "scrubbed for track, triggered for text" },
+      "scroll_morphing": { "enabled": true, "description": "vertical scroll drives a horizontal photo track" }
+    },
+    "text_effects": {
+      "type": "split-letter-animate",
+      "description": "manifesto lines rise from masks",
+      "technology": "JS split + CSS transforms",
+      "params": { "split_strategy": "by-line", "animation_per_unit": "translateY 100% to 0", "stagger": "~80ms", "effect_style": "masked rise" }
+    },
+    "cursor_effects": {
+      "enabled": false, "type": "none", "description": "none",
+      "params": { "shape": "none", "size": "none", "blend_mode": "none", "trail": "none", "interaction_zone": "none" }
+    },
+    "image_effects": {
+      "type": "reveal-clip",
+      "description": "photos revealed by clip on scroll",
+      "technology": "CSS clip-path / WebGL",
+      "params": { "filter_pipeline": "none", "hover_transform": "scale", "reveal_animation": "clip", "distortion_type": "wave" }
+    },
+    "glassmorphism_neumorphism": {
+      "enabled": false, "style": "none",
+      "params": { "blur_radius": "0", "transparency": "0", "border_treatment": "none", "shadow_type": "none", "light_source_angle": "none" }
+    },
+    "canvas_drawings": {
+      "enabled": true, "type": "generative-lines",
+      "description": "contour lines and signature strokes",
+      "technology": "Canvas 2D / SVG",
+      "params": { "draw_method": "path stroke", "animation_loop": "scroll driven", "color_scheme": "sage on off-white", "responsiveness": "fluid", "interaction": "none" }
+    },
+    "svg_animations": {
+      "enabled": true, "type": "path-draw",
+      "description": "handwritten strokes drawn on scroll",
+      "params": { "animation_method": "stroke-dashoffset", "path_morphing": "no", "stroke_animation": "draw", "filter_effects": "none" }
+    },
+    "composite_notes": "Applied to this project as pacing only: the scale jump between huge display type and small labels, masked line reveals, one pinned horizontal track, full-viewport rhythm and smooth scroll. Colours, fonts, WebGL helmets and marquee were deliberately not carried over."
+  }
+}

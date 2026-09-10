@@ -1,750 +1,307 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kıvanç Karademir</title>
-<meta name="description" content="Kıvanç Karademir — kişisel portföy.">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Kıvanç Karademir | Perakende Kanal Satış Yöneticisi</title>
+  <meta name="description" content="Kıvanç Karademir: Türk Telekom’da Perakende Kanal Satış Yöneticisi. Satış, insan, veri ve teknolojiyi bir araya getirerek verimli ve sürdürülebilir sonuçlar üretir.">
+  <meta name="theme-color" content="#0F1523">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Kıvanç Karademir">
+  <meta property="og:description" content="Bunu nasıl daha iyi yapabiliriz? Satış, insan, veri ve teknolojinin kesişiminde bir kariyer.">
+  <meta property="og:url" content="https://kivancsh.github.io/">
+  <meta property="og:image" content="https://kivancsh.github.io/public/video/still.jpg">
+  <link rel="canonical" href="https://kivancsh.github.io/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1523'/%3E%3Cpath d='M10 40h44' stroke='%237CCBF2' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 
-<!-- JavaScript çalışıyorsa <html> etiketine "js" sınıfı eklenir.
-     Belirme efekti yalnızca bu sınıf varken devreye girer; böylece
-     JavaScript kapalıysa içerik gizli kalmaz, olduğu gibi görünür. -->
-<script>document.documentElement.className = 'js';</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap">
+  <link rel="preload" as="image" href="public/video/poster.jpg" media="(min-width: 861px)">
+  <link rel="preload" as="image" href="public/video/poster-mobile.jpg" media="(max-width: 860px)">
 
-<style>
-/* ==========================================================================
-   DEĞİŞKENLER
-   Tüm renkler ve ölçüler burada.
-   ========================================================================== */
-:root {
-  --zemin:        #f4f6f9;   /* çok açık soğuk gri-beyaz */
-  --zemin-2:      #eceff4;   /* bir tık koyu — video alanı gibi yüzeyler */
-  --metin:        #101f3c;   /* koyu mürekkep laciverti */
-  --metin-soluk:  #5a6a83;   /* ikincil yazı — soğuk gri */
-  --cizgi:        #d5dce6;   /* ince ayraç çizgileri */
-  --vurgu:        #0b5fff;   /* elektrik mavisi — YALNIZCA rakamlarda */
-
-  --sutun:        700px;     /* okuma sütunu genişliği */
-  --kenar:        28px;      /* sayfa kenar boşluğu */
-
-  /* Tek bir sans-serif aile — serif yok, hepsi sistemde hazır */
-  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
-          Helvetica, Arial, sans-serif;
-}
-
-/* ==========================================================================
-   TEMEL
-   ========================================================================== */
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-
-body {
-  background: var(--zemin);
-  color: var(--metin);
-  font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.65;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Okuma sütunu — içerik sayfaya yayılmaz, ortada dar bir kolonda durur */
-.sutun {
-  width: 100%;
-  max-width: var(--sutun);
-  margin: 0 auto;
-  padding: 0 var(--kenar);
-}
-
-/* Gövde metni: satır uzunluğu 68 karakteri geçmez */
-p { max-width: 68ch; }
-
-a { color: inherit; }
-
-a:focus-visible { outline: 2px solid var(--metin); outline-offset: 3px; }
-
-/* Yer tutucu metinler — doldurunca bu sınıfı sil, yazı normale döner */
-.yer-tutucu { color: var(--metin-soluk); }
-
-/* ==========================================================================
-   VURGU KURALI  ————————————————————————————————————————————————
-   Vurgu rengi SADECE sayısal değerlerde kullanılır. Başlıkta, bağlantıda,
-   çizgide, ikonda kullanılmaz. Kural tek bir sınıfta toplandı: .sayi
-   Sayfaya yeni bir rakam eklerken bu sınıfı ver, rengi kendi gelir.
-   ========================================================================== */
-.sayi {
-  color: var(--vurgu);
-  font-variant-numeric: tabular-nums;   /* rakamlar eşit genişlikte hizalanır */
-  font-feature-settings: "tnum" 1;
-}
-
-/* ==========================================================================
-   TİPOGRAFİ ÖLÇEĞİ
-   Büyüklük sırası:  1) ad   2) metrik rakamları   3) bölüm başlıkları
-   ========================================================================== */
-h1 {
-  font-size: clamp(2.6rem, 8.5vw, 4.6rem);
-  font-weight: 650;
-  line-height: 1.04;
-  letter-spacing: -0.035em;
-}
-
-h2 {
-  font-size: clamp(1.45rem, 3.4vw, 1.95rem);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.02em;
-}
-
-h3 {
-  font-size: 1.1rem;
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-/* Küçük teknik etiketler — "01 — HAKKIMDA", "PROBLEM", "SONUÇ" */
-.etiket {
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--metin-soluk);
-  display: block;
-  margin-bottom: 14px;
-}
-
-/* ==========================================================================
-   BÖLÜM ARALIKLARI
-   ========================================================================== */
-.bolum { padding-bottom: clamp(80px, 12vh, 124px); }
-
-.bolum > .sutun { padding-top: clamp(80px, 12vh, 124px); }
-
-/* Ayraç çizgisi metnin kenarını takip eder, sütun dolgusunu değil */
-.bolum + .bolum > .sutun { position: relative; }
-.bolum + .bolum > .sutun::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: var(--kenar);
-  right: var(--kenar);
-  height: 1px;
-  background: var(--cizgi);
-}
-
-.bolum-basi { margin-bottom: 40px; }
-
-/* ==========================================================================
-   ÜST BÖLÜM + METRİKLER — ikisi birlikte ilk ekranı doldurur
-   Metrikler kaydırmadan görünsün diye aynı tam ekran bloğun içindeler.
-   ========================================================================== */
-.ust {
-  min-height: 100vh;
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 48px 0 32px;
-}
-
-/* Profil fotoğrafı — dairesel, ölçülü boyutta */
-.profil {
-  /* Genişlik ve yükseklik aynı değer — tam daire için ikisi de gerekli */
-  width:  clamp(88px, 14vw, 116px);
-  height: clamp(88px, 14vw, 116px);
-  border-radius: 50%;
-  object-fit: cover;
-  /* Fotoğraf dikey; yüz üst tarafta kaldığı için kırpma noktasını
-     yukarı çektim. Yüz ortalanmıyorsa bu yüzdeyi değiştir. */
-  object-position: 50% 22%;
-  display: block;
-  margin-bottom: 30px;
-}
-
-.ust h1 { margin-bottom: 18px; }
-
-/* Tek satırlık tanıtım cümlesi */
-.tanitim {
-  font-size: clamp(1.02rem, 2.4vw, 1.22rem);
-  line-height: 1.5;
-  color: var(--metin-soluk);
-  max-width: 42ch;
-}
-
-/* ==========================================================================
-   METRİK ŞERİDİ — üç metrik yan yana, aralarında ince dikey ayraç
-   Rakamlar sayfadaki en büyük ikinci öğe.
-   ========================================================================== */
-.metrikler {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  margin-top: clamp(40px, 7vh, 66px);
-  border-top: 1px solid var(--cizgi);
-  padding-top: 26px;
-}
-
-.metrik { padding-right: 16px; }
-
-/* Dikey ayraçlar — yalnızca 2. ve 3. metriğin soluna */
-.metrik + .metrik {
-  border-left: 1px solid var(--cizgi);
-  padding-left: clamp(14px, 3vw, 26px);
-}
-
-.metrik-sayi {
-  display: block;
-  font-size: clamp(2rem, 6.5vw, 3.3rem);   /* ikinci en büyük öğe */
-  font-weight: 650;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  margin-bottom: 8px;
-}
-
-.metrik-aciklama {
-  display: block;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: var(--metin-soluk);
-  letter-spacing: 0.01em;
-}
-
-/* Aşağı kaydırma işareti */
-.kaydir {
-  margin-top: clamp(32px, 6vh, 54px);
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  color: var(--metin-soluk);
-  text-decoration: none;
-  width: fit-content;
-}
-.kaydir::after {
-  content: "";
-  width: 1px;
-  height: 34px;
-  background: var(--cizgi);
-  display: block;
-}
-.kaydir:hover { color: var(--metin); }
-.kaydir:hover::after { background: var(--metin); }
-
-/* ==========================================================================
-   PROJELER — her proje: ad / problem / ne yaptım / sonuç
-   ========================================================================== */
-.proje-liste { list-style: none; }
-
-.proje { padding: 30px 0; border-top: 1px solid var(--cizgi); }
-.proje:last-child { border-bottom: 1px solid var(--cizgi); }
-
-.proje-ust {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.proje-yil { font-size: 0.85rem; font-weight: 600; white-space: nowrap; }
-
-/* Problem / Yaptığım satırları — solda etiket, sağda tek satırlık metin */
-.proje-detay { display: grid; gap: 8px; margin-bottom: 18px; }
-
-@media (min-width: 620px) {
-  .proje-detay { grid-template-columns: 96px 1fr; gap: 8px 20px; }
-}
-
-.proje-detay dt {
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--metin-soluk);
-  padding-top: 3px;
-}
-.proje-detay dd { font-size: 0.95rem; color: var(--metin-soluk); }
-
-/* SONUÇ satırı — rakam vurgu renginde ve kalın */
-.sonuc {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding-top: 16px;
-  border-top: 1px solid var(--cizgi);
-}
-
-.sonuc-etiket {
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--metin-soluk);
-}
-
-.sonuc-sayi { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
-
-.sonuc-metin { font-size: 0.95rem; color: var(--metin-soluk); }
-
-/* ==========================================================================
-   VİDEO — 16:9 oranı korunur, mobilde taşmaz
-   ========================================================================== */
-.video-cerceve {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: var(--zemin-2);
-  border: 1px solid var(--cizgi);
-  overflow: hidden;
-}
-
-/* Gömülen iframe çerçeveyi tam doldurur */
-.video-cerceve iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-
-/* Video kimliği henüz girilmediğinde görünen boş alan */
-.video-bos {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 20px;
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
-  color: var(--metin-soluk);
-}
-
-/* Eski tarayıcılar aspect-ratio bilmiyorsa oran yine korunur */
-@supports not (aspect-ratio: 16 / 9) {
-  .video-cerceve { position: relative; padding-top: 56.25%; height: 0; }
-  .video-cerceve > * { position: absolute; inset: 0; }
-}
-
-/* ==========================================================================
-   YETKİNLİKLER — üç grup: Analiz, Süreç, Satış
-   ========================================================================== */
-.yetkinlik-grup { padding: 24px 0; border-top: 1px solid var(--cizgi); }
-.yetkinlik-grup:last-child { border-bottom: 1px solid var(--cizgi); }
-
-.yetkinlik-grup h3 { margin-bottom: 10px; }
-
-.yetkinlik-grup ul { list-style: none; display: grid; gap: 6px; }
-
-.yetkinlik-grup li {
-  font-size: 0.95rem;
-  color: var(--metin-soluk);
-  padding-left: 16px;
-  position: relative;
-}
-.yetkinlik-grup li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.68em;
-  width: 6px;
-  height: 1px;
-  background: var(--cizgi);
-}
-
-/* ==========================================================================
-   İLETİŞİM
-   ========================================================================== */
-.iletisim-liste { list-style: none; margin-top: 8px; }
-
-.iletisim-liste li { padding: 16px 0; border-top: 1px solid var(--cizgi); }
-.iletisim-liste li:last-child { border-bottom: 1px solid var(--cizgi); }
-
-.iletisim-liste .ad {
-  display: block;
-  font-size: 0.68rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--metin-soluk);
-  margin-bottom: 3px;
-}
-
-.iletisim-liste a {
-  text-decoration: none;
-  border-bottom: 1px solid var(--cizgi);
-  padding-bottom: 2px;
-  transition: border-color 0.18s ease;
-}
-.iletisim-liste a:hover { border-color: var(--metin); }
-
-/* ==========================================================================
-   ALT BİLGİ
-   ========================================================================== */
-.alt {
-  padding: 48px 0 64px;
-  font-size: 0.76rem;
-  letter-spacing: 0.06em;
-  color: var(--metin-soluk);
-  border-top: 1px solid var(--cizgi);
-}
-
-/* ==========================================================================
-   BELİRME EFEKTİ — bölüm ekrana girince bir kez yumuşakça belirir
-   ========================================================================== */
-.js .belir {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.js .belir.gorunur { opacity: 1; transform: none; }
-
-/* ==========================================================================
-   MOBİL
-   ========================================================================== */
-@media (max-width: 640px) {
-  :root { --kenar: 20px; }
-  body { font-size: 16px; }
-  .metrik-aciklama { font-size: 0.72rem; }
-  .proje-ust { flex-direction: column; gap: 2px; }
-  .sonuc { gap: 8px; }
-}
-
-/* Hareket azaltma tercihi — tüm geçişleri kapat, içerik direkt görünsün */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  * { transition: none !important; animation: none !important; }
-  .js .belir { opacity: 1; transform: none; }
-}
-</style>
+  <link rel="stylesheet" href="assets/css/scrollcraft.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <script>
+    // Düzen JS çalışmadan önce doğru moda geçsin (ilk boyamada sıçrama olmasın)
+    (function (d) {
+      var m = matchMedia('(max-width: 860px), (hover: none) and (pointer: coarse)').matches;
+      var r = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      d.classList.add('js', m ? 'is-mobile' : 'is-desktop');
+      if (r) d.classList.add('is-reduced');
+    })(document.documentElement);
+  </script>
 </head>
-
 <body>
+  <a class="skip" href="#hakkimda">İçeriğe geç</a>
 
-<main>
+  <!-- Açılış perdesi: çizgi video yüklendikçe uzar, sonra filmin ufuk çizgisine dönüşür -->
+  <div class="loader" aria-hidden="true">
+    <div class="loader__line"><span class="loader__fill"></span></div>
+    <p class="loader__meta"><span class="loader__name">Kıvanç Karademir</span><span class="loader__pct">0</span></p>
+  </div>
 
-  <!-- ========================================================================
-       BÖLÜM 1 — ÜST BÖLÜM + METRİKLER (İLK EKRAN)
-       Profil fotoğrafı, ad, tanıtım cümlesi ve hemen altında üç metrik.
-       İkisi de aynı tam ekran bloğun içinde; metrikler kaydırmadan görünür.
-       Fotoğraf: profil.jpg — kırpma noktası CSS'te .profil > object-position
-       ======================================================================== -->
-  <section class="ust" id="ust">
-    <div class="sutun">
-      <img class="profil" src="profil.jpg" alt="Kıvanç Karademir'in portre fotoğrafı" width="116" height="116">
+  <!-- ÜST MENÜ -->
+  <header class="nav" data-tone="night">
+    <a class="nav__mark" href="#film" aria-label="Kıvanç Karademir, başa dön">Kıvanç Karademir</a>
+    <nav class="nav__links" aria-label="Bölümler">
+      <a href="#hakkimda">Hakkımda</a>
+      <a href="#stajlar">Stajlar</a>
+      <a href="#egitim-programlari">Eğitim Programları</a>
+      <a href="#is-tecrubeleri">İş Tecrübeleri</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu">Menü</button>
+  </header>
 
-      <h1>Kıvanç Karademir</h1>
+  <div class="menu" id="menu" hidden>
+    <nav aria-label="Mobil menü">
+      <a href="#hakkimda">Hakkımda</a>
+      <a href="#stajlar">Stajlar</a>
+      <a href="#egitim-programlari">Eğitim Programları</a>
+      <a href="#is-tecrubeleri">İş Tecrübeleri</a>
+      <a href="#iletisim">İletişim</a>
+    </nav>
+    <button class="menu__close" type="button">Kapat</button>
+  </div>
 
-      <p class="tanitim yer-tutucu">
-        Buraya seni tek cümlede anlatan güçlü bir tanıtım gelecek.
-      </p>
+  <main>
+    <!-- BÖLÜM 1: SİNEMATİK GİRİŞ
+         Kaydırma videonun zamanını sürer. Metinler videonun kendi oynatma
+         kafasından okunur; sahne aralıkları assets/js/main.js > SCENES -->
+    <section class="film" id="film" data-sc-act="scrub" data-sc-span="6.4" data-sc-clip-map="travel" data-sc-lerp="0.2" aria-label="Giriş">
+      <div class="film__stage" data-sc-stage>
+        <picture>
+          <source media="(max-width: 860px)" srcset="public/video/poster-mobile.jpg">
+          <img class="sc-stage__poster film__poster" src="public/video/poster.jpg" alt="" width="1920" height="1080">
+        </picture>
+        <video class="film__video" data-sc-scrub data-src-desktop="public/video/hero.mp4" data-src-mobile="public/video/hero-mobile.mp4" muted playsinline aria-hidden="true"></video>
+        <picture class="film__still">
+          <source media="(max-width: 860px)" srcset="public/video/still-mobile.jpg">
+          <img src="public/video/still.jpg" alt="" loading="lazy" width="1920" height="1080">
+        </picture>
+        <div class="film__scrim" aria-hidden="true"></div>
+        <div class="film__veil" aria-hidden="true"></div>
 
-      <!-- METRİKLER — üç tane. Rakamlara .sayi sınıfı verildiği için
-           vurgu rengini otomatik alırlar. Yeni metrik eklersen
-           .metrikler ızgarasındaki sütun sayısını da güncelle. -->
-      <div class="metrikler">
-        <div class="metrik">
-          <span class="metrik-sayi sayi">XX</span>
-          <span class="metrik-aciklama yer-tutucu">Birinci metriğin kısa açıklaması</span>
-        </div>
-        <div class="metrik">
-          <span class="metrik-sayi sayi">XX</span>
-          <span class="metrik-aciklama yer-tutucu">İkinci metriğin kısa açıklaması</span>
-        </div>
-        <div class="metrik">
-          <span class="metrik-sayi sayi">%XX</span>
-          <span class="metrik-aciklama yer-tutucu">Üçüncü metriğin kısa açıklaması</span>
-        </div>
-      </div>
-
-      <a class="kaydir" href="#hakkimda">Aşağı</a>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       BÖLÜM 2 — HAKKIMDA
-       İki paragraf. Metni doldurunca "yer-tutucu" sınıflarını sil.
-       ======================================================================== -->
-  <section class="bolum belir" id="hakkimda">
-    <div class="sutun">
-      <div class="bolum-basi">
-        <span class="etiket"><span class="sayi">01</span> &nbsp;— Hakkımda</span>
-        <h2>Kısa bir tanışma</h2>
-      </div>
-
-      <p class="yer-tutucu" style="margin-bottom: 18px;">
-        Birinci paragraf yer tutucusu. Ne iş yaptığın, kaç yıldır bu alanda
-        olduğun ve hangi sektörlerde çalıştığın buraya yazılacak.
-      </p>
-      <p class="yer-tutucu">
-        İkinci paragraf yer tutucusu. Çalışma tarzın, seni ayıran yanların
-        ve şu an ilgilendiğin konular buraya yazılacak.
-      </p>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       BÖLÜM 3 — PROJELER
-       Her proje dört parçadan oluşur:
-         ad  /  PROBLEM (tek satır)  /  YAPTIĞIM (tek satır)  /  SONUÇ (rakam)
-       Yeni proje eklemek için bir <li class="proje"> bloğunu kopyala.
-       ======================================================================== -->
-  <section class="bolum belir" id="projeler">
-    <div class="sutun">
-      <div class="bolum-basi">
-        <span class="etiket"><span class="sayi">02</span> &nbsp;— Projeler</span>
-        <h2>Seçilmiş işler</h2>
-      </div>
-
-      <ul class="proje-liste">
-
-        <!-- PROJE 1 -->
-        <li class="proje">
-          <div class="proje-ust">
-            <h3 class="yer-tutucu">Proje Adı 1</h3>
-            <span class="proje-yil sayi">20XX</span>
+        <div class="film__copy">
+          <!-- Sahne: Işık -->
+          <div class="scene scene--horizon scene--intro" data-scene="intro">
+            <h1 class="film__name"><span class="ln"><span class="ln__i">Kıvanç</span></span><span class="ln"><span class="ln__i">Karademir</span></span></h1>
+            <p class="film__role"><span class="ln"><span class="ln__i">Perakende Kanal Satış Yöneticisi</span></span><span class="ln"><span class="ln__i">Türk Telekom</span></span></p>
           </div>
-          <dl class="proje-detay">
-            <dt>Problem</dt>
-            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
-            <dt>Yaptığım</dt>
-            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
-          </dl>
-          <p class="sonuc">
-            <span class="sonuc-etiket">Sonuç</span>
-            <span class="sonuc-sayi sayi">%XX</span>
-            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
-          </p>
-        </li>
 
-        <!-- PROJE 2 -->
-        <li class="proje">
-          <div class="proje-ust">
-            <h3 class="yer-tutucu">Proje Adı 2</h3>
-            <span class="proje-yil sayi">20XX</span>
+          <!-- Sahne: Soru. İmza hareketi: cümle dağınık girer, video toparlandıkça kendini düzeltir -->
+          <div class="scene scene--horizon scene--question" data-scene="soru">
+            <p class="scene__lead"><span class="ln"><span class="ln__i">Beni ileriye taşıyan temel soru</span></span></p>
+            <h2 class="question" aria-label="Bunu nasıl daha iyi yapabiliriz?"><span class="w">Bunu</span> <span class="w">nasıl</span> <span class="w">daha</span> <span class="w">iyi</span> <span class="w">yapabiliriz?</span></h2>
           </div>
-          <dl class="proje-detay">
-            <dt>Problem</dt>
-            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
-            <dt>Yaptığım</dt>
-            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
-          </dl>
-          <p class="sonuc">
-            <span class="sonuc-etiket">Sonuç</span>
-            <span class="sonuc-sayi sayi">XX</span>
-            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
-          </p>
-        </li>
 
-        <!-- PROJE 3 -->
-        <li class="proje">
-          <div class="proje-ust">
-            <h3 class="yer-tutucu">Proje Adı 3</h3>
-            <span class="proje-yil sayi">20XX</span>
+          <!-- Sahne: Ağ -->
+          <div class="scene scene--low" data-scene="ag">
+            <h2 class="scene__title" data-lines>Satış, insan, veri ve teknoloji.</h2>
+            <p class="scene__text" data-lines><span class="num">70+</span> bayi ve <span class="num">300+</span> personelle perakende kanal performansını yönetiyorum.</p>
           </div>
-          <dl class="proje-detay">
-            <dt>Problem</dt>
-            <dd class="yer-tutucu">Çözülmesi gereken problem tek satırda buraya.</dd>
-            <dt>Yaptığım</dt>
-            <dd class="yer-tutucu">Senin attığın adım tek satırda buraya.</dd>
-          </dl>
-          <p class="sonuc">
-            <span class="sonuc-etiket">Sonuç</span>
-            <span class="sonuc-sayi sayi">XX</span>
-            <span class="sonuc-metin yer-tutucu">sonucun kısa açıklaması</span>
-          </p>
-        </li>
 
-      </ul>
-    </div>
-  </section>
+          <!-- Sahne: Veri -->
+          <div class="scene scene--low" data-scene="veri">
+            <h2 class="scene__title" data-lines>Hedeften fazlası.</h2>
+            <p class="scene__text" data-lines>Veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmek.</p>
+          </div>
 
-  <!-- ========================================================================
-       BÖLÜM 4 — VİDEO
-       Alan 16:9 oranında, mobilde taşmaz.
-       >>> VİDEO KİMLİĞİNİ DEĞİŞTİRMEK İÇİN: sayfanın en altındaki script
-           bloğunda "VIDEO_KIMLIGI" satırını düzenle. Tek yer orası. <<<
-       ======================================================================== -->
-  <section class="bolum belir" id="video">
-    <div class="sutun">
-      <div class="bolum-basi">
-        <span class="etiket"><span class="sayi">03</span> &nbsp;— Video</span>
-        <h2>Tanıtım videosu</h2>
+          <!-- Sahne: Eğri. Sayaç eğrinin yükselişiyle aynı anda sayar -->
+          <div class="scene scene--low scene--metric" data-scene="egri">
+            <p class="scene__figure"><span class="ln"><span class="ln__i num"><span class="pct">%</span><span class="js-hero-count">62</span></span></span></p>
+            <h2 class="scene__title scene__title--sm"><span class="ln"><span class="ln__i">Verimlilik artışı</span></span></h2>
+            <p class="scene__text"><span class="ln"><span class="ln__i">Türk Telekom’da ticari performans</span></span></p>
+          </div>
+
+          <!-- Sahne: Şafak -->
+          <div class="scene scene--horizon scene--dawn" data-scene="safak">
+            <p class="scene__title scene__title--dawn" data-lines>Sürekli daha iyisi.</p>
+          </div>
+        </div>
       </div>
+    </section>
 
-      <div class="video-cerceve" id="video-cerceve">
-        <!-- Video kimliği girilene kadar bu boş alan görünür.
-             Kimlik girildiğinde script bu alanı iframe ile değiştirir. -->
-        <div class="video-bos">Video kimliği girildiğinde burada oynatılacak</div>
+    <!-- BÖLÜM 2: HAKKIMDA -->
+    <section class="about" id="hakkimda" data-tone="day">
+      <div class="wrap about__grid">
+        <h2 class="display about__title" data-reveal="lines">Hakkımda</h2>
+
+        <figure class="portrait" aria-label="Kıvanç Karademir">
+          <div class="portrait__frame">
+            <img class="portrait__img portrait__img--color" src="public/img/me.jpg" srcset="public/img/me-900.jpg 725w, public/img/me.jpg 1320w" sizes="(max-width: 860px) 88vw, 34vw" alt="Kıvanç Karademir, lacivert takım elbiseyle bir havuz kenarında" width="1320" height="1639" loading="lazy" decoding="async">
+            <img class="portrait__img portrait__img--mono" src="public/img/me.jpg" srcset="public/img/me-900.jpg 725w, public/img/me.jpg 1320w" sizes="(max-width: 860px) 88vw, 34vw" alt="" width="1320" height="1639" loading="lazy" decoding="async" aria-hidden="true">
+          </div>
+        </figure>
+
+        <div class="about__text">
+          <p class="about__lead" data-reveal="lines">Beni ileriye taşıyan temel soru: <strong>“Bunu nasıl daha iyi yapabiliriz?”</strong></p>
+          <p data-reveal="fade">Türk Telekom’da Satış Yöneticisi olarak; satış, insan, veri ve teknolojiyi bir araya getirerek perakende kanal performansını yönetiyor, mağaza ve bayilerin gelişimine liderlik ediyorum. Hedefleri yalnızca gerçekleştirmeye değil, <strong>veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmeye</strong> odaklanıyorum.</p>
+          <p data-reveal="fade">Analitik bakış açımı güçlü iletişim ve insan odaklı yaklaşımımla birleştirerek performans gelişimi, süreç optimizasyonu ve iş geliştirme alanlarında çözümler üretiyorum.</p>
+          <p data-reveal="fade">Kariyerimi geleceğin teknolojileriyle birlikte şekillendiriyor; <strong>Yapay Zekâ, otomasyon ve dijital dönüşüm</strong> alanlarında kendimi sürekli geliştiriyorum. Amacım teknolojiyi yalnızca kullanmak değil, iş süreçlerine gerçek değer katacak çözümlere dönüştürmek.</p>
+          <p class="about__stance" data-reveal="fade"><strong>Satış, teknoloji ve insanın kesişiminde; girişimci bir bakış açısıyla, sürekli daha iyisini arayarak ilerliyorum.</strong></p>
+        </div>
       </div>
-    </div>
-  </section>
-
-  <!-- ========================================================================
-       BÖLÜM 5 — YETKİNLİKLER
-       Üç grup: Analiz, Süreç, Satış. Madde eklemek için <li> kopyala.
-       ======================================================================== -->
-  <section class="bolum belir" id="yetkinlikler">
-    <div class="sutun">
-      <div class="bolum-basi">
-        <span class="etiket"><span class="sayi">04</span> &nbsp;— Yetkinlikler</span>
-        <h2>Ne yapabilirim</h2>
+      <div class="wrap">
+        <p class="about__close" data-reveal="lines">Çünkü benim için gelişim bir hedef değil, <strong>sürekli devam eden bir süreç.</strong></p>
       </div>
+    </section>
 
-      <!-- YETKİNLİK GRUBU 1 — ANALİZ -->
-      <div class="yetkinlik-grup">
-        <h3>Analiz</h3>
-        <ul class="yer-tutucu">
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
+    <!-- BÖLÜM 3: STAJLAR (tipografik liste, logolar gerçek dosyalar) -->
+    <section class="roster" id="stajlar" data-tone="day">
+      <div class="wrap">
+        <h2 class="display" data-reveal="lines">Stajlar</h2>
+        <ol class="roster__list">
+          <li class="roster__item" data-reveal="row">
+            <span class="plate plate--row"><img src="public/logos/qnb-finansbank.png" alt="" style="--lw: 7.6rem" width="604" height="197" loading="lazy"></span>
+            <span class="roster__name">QNB Finansbank</span>
+          </li>
+          <li class="roster__item" data-reveal="row">
+            <span class="plate plate--row"><img src="public/logos/vodafone.png" alt="" style="--lw: 3.9rem" width="154" height="154" loading="lazy"></span>
+            <span class="roster__name">Vodafone</span>
+          </li>
+          <li class="roster__item" data-reveal="row">
+            <span class="plate plate--row"><img src="public/logos/sampa.png" alt="" style="--lw: 3.9rem" width="1200" height="1200" loading="lazy"></span>
+            <span class="roster__name">SAMPA</span>
+          </li>
+          <li class="roster__item" data-reveal="row">
+            <span class="plate plate--row"><img src="public/logos/kastamonu-entegre.png" alt="" style="--lw: 9.2rem" width="1200" height="259" loading="lazy"></span>
+            <span class="roster__name">Kastamonu Entegre</span>
+          </li>
+          <li class="roster__item" data-reveal="row">
+            <span class="plate plate--row"><img src="public/logos/bp.png" alt="" style="--lw: 3.5rem" width="904" height="1200" loading="lazy"></span>
+            <span class="roster__name">BP</span>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 4: EĞİTİM PROGRAMLARI (logo levhaları) -->
+    <section class="programs" id="egitim-programlari" data-tone="day">
+      <div class="wrap">
+        <h2 class="display" data-reveal="lines">Eğitim Programları</h2>
+        <ul class="programs__grid">
+          <li class="program" data-reveal="card">
+            <span class="plate plate--tall"><img src="public/logos/turkcell.png" alt="" style="--lw: 11rem" width="1200" height="267" loading="lazy"></span>
+            <span class="program__name">Turkcell</span>
+          </li>
+          <li class="program" data-reveal="card">
+            <span class="plate plate--tall"><img src="public/logos/lc-waikiki.png" alt="" style="--lw: 10.5rem" width="1200" height="209" loading="lazy"></span>
+            <span class="program__name">LC Waikiki</span>
+          </li>
+          <li class="program" data-reveal="card">
+            <span class="plate plate--tall"><img src="public/logos/loreal.png" alt="" style="--lw: 10.5rem" width="800" height="146" loading="lazy"></span>
+            <span class="program__name">L’Oréal</span>
+          </li>
+          <li class="program" data-reveal="card">
+            <span class="plate plate--tall"><img src="public/logos/pg.png" alt="" style="--lw: 7.4rem" width="1200" height="547" loading="lazy"></span>
+            <span class="program__name">P&amp;G VIA</span>
+          </li>
         </ul>
       </div>
+    </section>
 
-      <!-- YETKİNLİK GRUBU 2 — SÜREÇ -->
-      <div class="yetkinlik-grup">
-        <h3>Süreç</h3>
-        <ul class="yer-tutucu">
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
-        </ul>
+    <!-- BÖLÜM 5: İŞ TECRÜBELERİ -->
+    <section class="work" id="is-tecrubeleri" data-tone="day">
+      <div class="wrap">
+        <h2 class="display" data-reveal="lines">İş Tecrübeleri</h2>
+
+        <!-- İŞ 1: YILDIZ HOLDING -->
+        <article class="job job--yildiz">
+          <div class="job__side">
+            <span class="plate plate--job"><img src="public/logos/yildiz-holding.png" alt="" style="--lw: 12rem" width="560" height="65" loading="lazy"></span>
+          </div>
+          <div class="job__main">
+            <h3 class="job__company" data-reveal="lines">Yıldız Holding</h3>
+            <p class="job__meta" data-reveal="fade"><span>Penta Teknoloji</span><span>İş Geliştirme Uzmanı</span><span class="num num--sm">2023-2024</span></p>
+            <p class="job__text" data-reveal="fade">Yıldız Holding’in sahibi olduğu Penta Teknoloji’de 2023-2024 yıllarında İş Geliştirme Uzmanı olarak; IBM Software ürünlerinin (ESA, SaaS, Cloud, On Prem vb.) satışından sorumluydum. 25’ten fazla account’a sahip olup bu account’larla düzenli ziyaretler, pipeline takipleri ve proje yönetimi yaptık. 500.000 TL’den fazla satış ile sürecimi tamamladım.</p>
+            <dl class="figures" data-reveal="fade">
+              <div class="figure">
+                <dt class="figure__label">Account</dt>
+                <dd class="figure__value num" data-count="25" data-suffix="+">25+</dd>
+              </div>
+              <div class="figure">
+                <dt class="figure__label">Satış</dt>
+                <dd class="figure__value num" data-count="500000" data-suffix="+" data-unit="TL">500.000+<span class="unit">TL</span></dd>
+              </div>
+            </dl>
+          </div>
+        </article>
+
+        <!-- İŞ 2: TÜRK TELEKOM -->
+        <article class="job job--tt">
+          <div class="job__side">
+            <span class="plate plate--job"><img src="public/logos/turk-telekom.png" alt="" style="--lw: 11rem" width="560" height="197" loading="lazy"></span>
+          </div>
+          <div class="job__main">
+            <h3 class="job__company" data-reveal="lines">Türk Telekom</h3>
+            <p class="job__meta" data-reveal="fade"><span>Perakende Kanal Satış Yöneticisi</span><span>Halen</span></p>
+            <p class="job__text" data-reveal="fade">Perakende Kanal Satış Yöneticisi olarak çalışmaya devam ederken özellikle Ticari Performans alanında sunduğum verimlilik ve optimizasyonla öne çıktım.</p>
+          </div>
+        </article>
       </div>
 
-      <!-- YETKİNLİK GRUBU 3 — SATIŞ -->
-      <div class="yetkinlik-grup">
-        <h3>Satış</h3>
-        <ul class="yer-tutucu">
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
-          <li>Yetkinlik maddesi</li>
-        </ul>
+      <!-- Türk Telekom metrikleri. Masaüstünde yatay şerit (kaydırmayla yana akar), mobilde gruplu liste -->
+      <div class="ledger" id="ticari-performans" aria-label="Türk Telekom ticari performans metrikleri">
+        <div class="ledger__stage">
+          <div class="ledger__rail">
+            <div class="ledger__intro">
+              <p class="ledger__kicker">Ticari Performans</p>
+              <p class="ledger__lede">Dokuz metrik, üç başlık altında: sahadaki ölçek, verimlilik ve optimizasyon, ticari sonuç.</p>
+            </div>
+
+            <section class="group" aria-labelledby="g-saha">
+              <h4 class="group__title" id="g-saha">Saha ve ekip</h4>
+              <ul class="group__list">
+                <li class="metric"><span class="metric__value num" data-count="70" data-suffix="+">70+</span><span class="metric__label">Bayi Yönetimi</span></li>
+                <li class="metric"><span class="metric__value num" data-count="300" data-suffix="+">300+</span><span class="metric__label">Personel Takibi</span></li>
+                <li class="metric"><span class="metric__value num" data-count="15" data-suffix="+">15+</span><span class="metric__label">Aylık Saha Ziyareti</span></li>
+              </ul>
+            </section>
+
+            <section class="group" aria-labelledby="g-verim">
+              <h4 class="group__title" id="g-verim">Verimlilik ve optimizasyon</h4>
+              <ul class="group__list">
+                <li class="metric metric--lead"><span class="metric__value num" data-count="62" data-prefix="%">%62</span><span class="metric__label">Verimlilik Artışı</span></li>
+                <li class="metric"><span class="metric__value num" data-count="92" data-prefix="%">%92</span><span class="metric__label">Ekip Hedef Gerçekleştirme Oranı</span></li>
+                <li class="metric"><span class="metric__value num" data-count="38" data-prefix="%">%38</span><span class="metric__label">Tüm Ürünlerde Büyüme</span></li>
+              </ul>
+            </section>
+
+            <section class="group" aria-labelledby="g-sonuc">
+              <h4 class="group__title" id="g-sonuc">Ticari sonuç</h4>
+              <ul class="group__list">
+                <li class="metric metric--lead"><span class="metric__value num">1.</span><span class="metric__label">Cihaz Satış Kampanyasında Türkiye 1.’liği</span></li>
+                <li class="metric metric--wide"><span class="metric__value num" data-count="300000" data-suffix="+" data-unit="TL">300.000+<span class="unit">TL</span></span><span class="metric__label">Ek Satış Hacmi</span></li>
+                <li class="metric metric--wide"><span class="metric__value num" data-count="700000" data-suffix="+" data-unit="TL">700.000+<span class="unit">TL</span></span><span class="metric__label">Ek Ciro Katkısı</span></li>
+              </ul>
+            </section>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ========================================================================
-       BÖLÜM 6 — İLETİŞİM
-       E-posta HTML içinde düz yazılmıyor; en alttaki script parçalardan
-       birleştiriyor. Adresi değiştirmek için oradaki iki değişkeni düzenle.
-       ======================================================================== -->
-  <section class="bolum belir" id="iletisim">
-    <div class="sutun">
-      <div class="bolum-basi">
-        <span class="etiket"><span class="sayi">05</span> &nbsp;— İletişim</span>
-        <h2>Bana ulaş</h2>
+    <!-- BÖLÜM 6: KAPANIŞ -->
+    <section class="close" id="iletisim" data-tone="day">
+      <div class="wrap">
+        <p class="close__q" data-reveal="lines">Bunu nasıl daha iyi yapabiliriz?</p>
+        <div class="close__line" aria-hidden="true"></div>
+        <div class="close__row">
+          <p class="close__note" data-reveal="fade">Bir sonraki soruyu birlikte soralım.</p>
+          <ul class="close__links" data-contact hidden></ul>
+        </div>
       </div>
+      <footer class="foot wrap">
+        <span>© <span class="num num--plain">2026</span> Kıvanç Karademir</span>
+        <a href="#film" class="foot__top">Başa dön</a>
+      </footer>
+    </section>
+  </main>
 
-      <p class="yer-tutucu">Buraya kısa bir davet cümlesi gelecek.</p>
+  <div class="grain" aria-hidden="true"></div>
 
-      <ul class="iletisim-liste">
-        <li>
-          <span class="ad">E-posta</span>
-          <!-- Bu alan JavaScript ile doldurulur. Kapalıysa aşağıdaki
-               yedek metin görünür, adres yine de sızmaz. -->
-          <span id="eposta-alani" class="yer-tutucu">e-posta adresi yükleniyor…</span>
-        </li>
-        <li>
-          <span class="ad">LinkedIn</span>
-          <!-- href kısmını kendi profil adresinle değiştir -->
-          <a href="https://www.linkedin.com/in/kullanici-adi/" target="_blank" rel="noopener noreferrer">
-            <span class="yer-tutucu">linkedin.com/in/kullanici-adi</span>
-          </a>
-        </li>
-      </ul>
-    </div>
-  </section>
-
-</main>
-
-<!-- ==========================================================================
-     ALT BİLGİ
-     ========================================================================== -->
-<footer class="alt">
-  <div class="sutun">© <span class="sayi">2026</span> Kıvanç Karademir</div>
-</footer>
-
-<script>
-/* ==========================================================================
-   1) VİDEO
-   >>> DEĞİŞTİRİLECEK TEK YER BURASI <<<
-   YouTube adresindeki "watch?v=" sonrasındaki kimliği tırnak arasına yaz.
-   Örnek adres:  https://www.youtube.com/watch?v=AbCdEf12345
-   Örnek kimlik: AbCdEf12345
-   Boş bırakılırsa sayfada boş çerçeve görünür, hata vermez.
-   ========================================================================== */
-var VIDEO_KIMLIGI = '';
-
-(function () {
-  if (!VIDEO_KIMLIGI) return;               /* kimlik yoksa boş alan kalsın */
-
-  var cerceve = document.getElementById('video-cerceve');
-  if (!cerceve) return;
-
-  var iframe = document.createElement('iframe');
-  /* nocookie alan adı: izleyici videoyu oynatmadan çerez yazılmaz */
-  iframe.src = 'https://www.youtube-nocookie.com/embed/' + VIDEO_KIMLIGI;
-  iframe.title = 'Tanıtım videosu';
-  iframe.loading = 'lazy';
-  iframe.allow = 'accelerometer; clipboard-write; encrypted-media; picture-in-picture';
-  iframe.setAttribute('allowfullscreen', '');
-  iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-
-  cerceve.textContent = '';
-  cerceve.appendChild(iframe);
-})();
-
-/* ==========================================================================
-   2) E-POSTA ADRESİNİ PARÇALARDAN KUR
-   Adres kaynak kodda tek parça hâlde geçmiyor; tarayıcı çalışırken
-   birleştiriyor. Sayfayı tarayan basit spam botları bunu göremez.
-   ADRESİ DEĞİŞTİRMEK İÇİN: aşağıdaki iki satırı düzenle.
-   ========================================================================== */
-(function () {
-  var kullanici = 'merhaba';       /* ← @ işaretinden önceki kısım */
-  var alan      = 'ornek.com';     /* ← @ işaretinden sonraki kısım */
-
-  var adres = kullanici + String.fromCharCode(64) + alan;
-  var kutu  = document.getElementById('eposta-alani');
-  if (!kutu) return;
-
-  var link = document.createElement('a');
-  link.href = 'mai' + 'lto:' + adres;
-  link.textContent = adres;
-  kutu.textContent = '';
-  kutu.classList.remove('yer-tutucu');
-  kutu.appendChild(link);
-})();
-
-/* ==========================================================================
-   3) BÖLÜM BELİRME EFEKTİ
-   Bölüm ekrana girdiğinde bir kez yumuşakça belirir. Hareket azaltma
-   tercihi açıksa hiç çalışmaz, içerik doğrudan görünür.
-   ========================================================================== */
-(function () {
-  var azHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var ogeler = document.querySelectorAll('.belir');
-
-  if (azHareket || !('IntersectionObserver' in window)) {
-    for (var i = 0; i < ogeler.length; i++) ogeler[i].classList.add('gorunur');
-    return;
-  }
-
-  var gozlemci = new IntersectionObserver(function (girisler) {
-    girisler.forEach(function (giris) {
-      if (giris.isIntersecting) {
-        giris.target.classList.add('gorunur');
-        gozlemci.unobserve(giris.target);   /* efekt yalnızca bir kez */
-      }
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-
-  ogeler.forEach(function (oge) { gozlemci.observe(oge); });
-})();
-</script>
-
+  <script src="assets/js/scrollcraft.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>

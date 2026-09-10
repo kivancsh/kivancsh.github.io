@@ -1,8 +1,10 @@
 // Hero filmi üreticisi.
 //
-// Kıvanç Karademir sitesinin scroll ile oynatılan hero videosunu kareleri tek tek
-// çizerek üretir. Sahneler sitedeki metinlerle aynı zaman çizelgesini paylaşır;
-// zamanlamayı değiştirirsen assets/js/main.js içindeki SCENES dizisini de güncelle.
+// Sitenin giriş filminin referans çizeri. Film sayfada assets/js/film.js ile her
+// karede canlı çizilir (aynı sahne verisi, tohum, kamera ve izdüşüm); bu araç
+// afiş karelerini (ilk boyama, hareket azaltılmış mod, paylaşım kartı) üretir ve
+// istenirse filmi video olarak da kodlar. Sahne ya da kamera değişirse film.js de
+// güncellenir; zamanlama değişirse assets/js/main.js içindeki SCENES de.
 //
 //   swiftc -O tools/film.swift -o tools/.film
 //   tools/.film desktop public/video/hero.mp4

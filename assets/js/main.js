@@ -1,13 +1,14 @@
 /* ============================================================================
    Kıvanç Karademir: sayfa koreografisi
    ----------------------------------------------------------------------------
-   scrollcraft.js mekanizmayı sağlar (pinleme, video yükleme ve oynatma kafası,
-   yatay şerit). Bu dosya siteye özgü her şeyi yapar ve motoru hiç değiştirmez:
+   scrollcraft.js mekanizmayı sağlar (pinleme ve ilerleme, yatay şerit), film.js
+   giriş filmini her karede canlı çizer. Bu dosya siteye özgü her şeyi yapar ve
+   motoru hiç değiştirmez:
 
      1. Dil (TR / EN): Türkçe HTML'de, İngilizce assets/js/i18n.js içinde
      2. Yumuşak tekerlek kaydırması (masaüstü)
-     3. Açılış perdesi: gerçek indirme ilerlemesi, çizgi filmin ufkuna devredilir
-     4. Film metinleri: videonun KENDİ oynatma kafasından okunur
+     3. Açılış perdesi: kısa bir dolum, çizgi filmin ufkuna devredilir
+     4. Canlı film ve metinleri: kaydırma hikâyeyi, zaman hareketi, hız kamerayı sürer
      5. İmza hareketi: "Bunu nasıl daha iyi yapabiliriz?" kendini düzeltir
      6. Kariyer yolculuğu: tek yıl ekseni, kaydırdıkça ilerleyen oynatma çizgisi
      7. Önce / sonra grafiği, dönen kartlar, oynanabilir kapanış cümlesi
@@ -26,7 +27,6 @@
     linkedin: 'https://www.linkedin.com/in/alperenk%C4%B1van%C3%A7karademir/'
   };
   var CV_URL = 'public/cv/Kivanc-Karademir-CV.pdf';
-
 
   // Film zaman çizelgesi (0..1). tools/film.swift içindeki sahnelerle aynı.
   // [giriş başlar, tam görünür, çıkış başlar, tamamen çıktı]
@@ -924,7 +924,6 @@
 
   /* --------------------------------------------------- modu hazırla ----- */
   var film = $('#film');
-  var video = $('.film__video');
   var ledger = $('.ledger');
   var rail = $('.ledger__rail');
   var JOURNEY_PIN = !reduce && !isMobile && innerHeight >= 720 && (innerWidth > 1200 || innerHeight >= 860);
@@ -1004,7 +1003,6 @@
   var heroAct = actOf(film);
   var ledgerAct = actOf(ledger);
   var journeyAct = actOf(journey);
-  var clip = heroAct && heroAct.video;
 
   /* -------------------------------------------------- ufuk çizgisi -----
      Film "cover" ile yerleştiği için ufuk çizgisinin ekrandaki yeri pencere
@@ -1026,7 +1024,7 @@
      titreşir; dokunmatikte çizgiye dokununca titreşir. Kaydırma başlayınca
      düzleşir ve filmdeki (0.022'den itibaren beliren) çizgiye devreder. */
   var wire = { el: $('.film__wire'), ctx: null, n: 0, y: null, v: null, w: 0, h: 0, dpr: 1, hz: 0,
-               px: -1, py: 0, lastPy: null, drawn: false, lastAlpha: -1 };
+               px: -1, py: 0, lastPy: null, drawn: false, lastAlpha: -1, lastAmb: 0 };
   function sizeWire() {
     if (!wire.el || reduce) return;
     var r = stage.getBoundingClientRect();
@@ -1113,11 +1111,40 @@
   }
   sizeWire();
 
+  /* ------------------------------------------------------------ canlı film --
+     assets/js/film.js filmi her karede çizer. Kaydırma hikâyeyi (filmT) ilerletir,
+     zaman durunca da hareketi sürdürür, kaydırma hızı (kick) kamerayı ileri geri
+     atar. Oluşturulamazsa afiş karesi yerinde kalır. */
+  var liveEl = $('.film__live');
+  var live = null;
+  if (!reduce && liveEl && window.KKFilm) {
+    try { live = window.KKFilm.create(liveEl, { mobile: isMobile }); } catch (e) { live = null; }
+  }
+  function sizeLive() {
+    if (!live) return;
+    var r = stage.getBoundingClientRect();
+    live.resize(r.width, r.height);
+  }
+  sizeLive();
+  var filmT = 0;
+  var kick = { x: 0, v: 0, y: scrollY };
+  var perf = { ema: 16.7, n: 0 };
+  function stepKick(dt) {
+    // kaydırma hızı (ekran/sn) yaylı takip edilir: durunca hafifçe geri teper
+    var dy = scrollY - kick.y;
+    kick.y = scrollY;
+    if (Math.abs(dy) > innerHeight * 1.5) dy = 0; // bağlantıya atlama hız sayılmaz
+    var target = clamp(dt > 0 ? dy / dt * 1000 / innerHeight / 2.4 : 0, -1, 1);
+    var ks = dt / 1000;
+    kick.v += ((target - kick.x) * 80 - kick.v * 12.9) * ks;
+    kick.x = clamp(kick.x + kick.v * ks, -1.2, 1.2);
+  }
+
   /* --------------------------------------------------- açılış perdesi -- */
   var loader = $('.loader');
   var loaderPct = $('.loader__pct');
-  var boot = { start: 0, done: false };
-  var loadState = { value: 0, finished: false, failed: false };
+  var boot = { start: 0, done: false, loadStart: 0 };
+  var loadState = { value: 0, finished: false, fonts: false };
 
   function setLoad(v) {
     loadState.value = Math.max(loadState.value, c01(v));
@@ -1138,33 +1165,15 @@
     }, 280);
   }
 
+  // İndirilecek video yok: perde yazı tipleri hazır olunca kısa bir dolumla kalkar
   if (!reduce) {
     root.style.overflow = 'hidden';
     scrollTo(0, 0);
-    var src = isMobile ? video.getAttribute('data-src-mobile') : video.getAttribute('data-src-desktop');
-    fetch(src).then(function (res) {
-      if (!res.ok) throw new Error('video ' + res.status);
-      var total = +res.headers.get('Content-Length') || 0;
-      if (!res.body || !total || !res.body.getReader) return res.blob();
-      var reader = res.body.getReader(), chunks = [], got = 0;
-      return (function pump() {
-        return reader.read().then(function (r) {
-          if (r.done) return new Blob(chunks, { type: 'video/mp4' });
-          chunks.push(r.value); got += r.value.length;
-          setLoad(0.96 * got / total);
-          return pump();
-        });
-      })();
-    }).then(function (blob) {
-      // Motor videoyu bu yerel adresten alır: ikinci bir indirme olmaz
-      video.setAttribute('data-sc-src', URL.createObjectURL(blob));
-      if (sc) sc.read();
-    }).catch(function () {
-      loadState.failed = true;
-      finishLoader();
-    });
-    // Ağ çok yavaşsa ziyaretçiyi bekletme: afiş karesiyle devam et
-    setTimeout(finishLoader, 9000);
+    boot.loadStart = performance.now();
+    var fontsDone = function () { loadState.fonts = true; };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fontsDone); else fontsDone();
+    setTimeout(fontsDone, 1600);
+    setTimeout(finishLoader, 6000);
   } else {
     boot.start = performance.now() - 5000;
     loadState.finished = true;
@@ -1284,7 +1293,7 @@
       ln.style.transform = 'translate3d(0,' + ty.toFixed(2) + '%,0)';
       ln.style.opacity = op.toFixed(3);
     }
-    // metin katmanı videonun üstünde hafifçe süzülür (en fazla 3vh)
+    // metin katmanı filmin üstünde hafifçe süzülür (en fazla 3vh)
     var life = span(Math.max(w[0], 0), Math.min(w[3], 1), p);
     if (!reduce && s.id !== 'safak') s.el.style.transform = 'translate3d(0,' + ((0.5 - c01(life)) * 3).toFixed(2) + 'vh,0)';
     if (s.id === 'safak' && !isMobile) {
@@ -1473,6 +1482,7 @@
   function relayout(full) {
     computeHorizon();
     sizeWire();
+    sizeLive();
     sizeNet();
     if (full) {
       scenes.forEach(function (s) { s.live = null; });
@@ -1486,7 +1496,7 @@
   addEventListener('resize', function () {
     var nowMobile = matchMedia(mobileQuery).matches;
     if (nowMobile !== isMobile && !reduce) { location.reload(); return; }
-    if (isMobile && innerWidth === lastW) { computeHorizon(); sizeWire(); return; } // yalnız adres çubuğu
+    if (isMobile && innerWidth === lastW) { computeHorizon(); sizeWire(); sizeLive(); return; } // yalnız adres çubuğu
     lastW = innerWidth;
     clearTimeout(relayoutTimer);
     relayoutTimer = setTimeout(function () { relayout(true); }, 160);
@@ -1503,19 +1513,43 @@
     var dt = Math.min(now - lastT, 64); lastT = now;
     scrollStep(now, dt);
 
-    // Açılış: video ilk gerçek karesini boyadığında perde kalkar
-    if (!loadState.finished && clip && clip.painted) finishLoader();
+    // Açılış perdesi: kısa dolum; yazı tipleri ve filmin ilk karesi hazırsa kalkar
+    if (!loadState.finished) {
+      var lk = c01((now - boot.loadStart) / 900);
+      setLoad(loadState.fonts ? lk : Math.min(lk, 0.9));
+      if (lk >= 1 && loadState.fonts && (!live || live.painted)) finishLoader();
+    }
     var bootK = boot.start ? c01((now - boot.start) / 1500) : 0;
     if (!boot.done && bootK >= 1) boot.done = true;
 
-    // Filmin ilerlemesi: videonun kendi oynatma kafası (video yoksa kaydırma)
-    var p = 0;
-    if (heroAct) p = clip && clip.ready && !loadState.failed ? clip.cur : heroAct.p;
+    // Filmin ilerlemesi: kaydırma hedefi, oynatma kafası yumuşakça takip eder
+    var target = heroAct ? heroAct.p : 0;
+    filmT += (target - filmT) * (1 - Math.pow(0.8, dt / 16.667));
+    if (Math.abs(target - filmT) < 1e-5) filmT = target;
+    var p = filmT;
+    stepKick(dt);
+    var filmOn = !reduce && scrollY < marks.filmEnd + 10;
+    if (live && filmOn) {
+      live.render(p, now / 1000, kick.x, dt);
+      if (!stage.classList.contains('is-live') && live.painted) stage.classList.add('is-live');
+      // kare hızı düşerse film kendini sadeleştirir (parıltı, çözünürlük, yoğunluk)
+      if (!document.hidden && loadState.finished) {
+        perf.ema = perf.ema * 0.96 + dt * 0.04;
+        if (++perf.n > 150 && perf.ema > 21 && live.level < 3) { live.degrade(); perf.n = 0; perf.ema = 16.7; }
+      }
+    }
     if (!reduce && scrollY < marks.filmEnd + innerHeight) updateFilm(c01(p), bootK);
     updateNav(p);
     updatePortrait();
     updateJourney();
-    if (!reduce && scrollY < innerHeight) stepWire(c01(p));
+    if (!reduce && scrollY < innerHeight) {
+      // ışık teli durunca da ara sıra hafifçe titreşir
+      if (loadState.finished && now - wire.lastAmb > 3800 && p < 0.01) {
+        pluck(wire.w * (0.15 + Math.random() * 0.7), (Math.random() < 0.5 ? -1 : 1) * 2.4);
+        wire.lastAmb = now;
+      }
+      stepWire(c01(p));
+    }
     if (net.visible) drawNet(now);
     requestAnimationFrame(frame);
   }
@@ -1529,6 +1563,11 @@
       shift: runShift,
       net: function (mode, yaw) { if (mode) setNetMode(mode); if (yaw != null) net.yaw = yaw; net.morph = net.morphTarget; net.auto = 0; net.visible = true; drawNet(performance.now() + 60000); },
       wire: function (x, amp, steps) { pluck(wire.w * x, amp); for (var i = 0; i < (steps || 6); i++) stepWire(0); },
+      film: function (p, k, t) {
+        filmT = c01(p); kick.x = k || 0;
+        if (live) { live.render(filmT, t == null ? 12.3 : t, kick.x, 16.7); stage.classList.add('is-live'); }
+        updateFilm(filmT, 1); updateNav(filmT); stepWire(filmT);
+      },
       play: function (xf, yf, n) {
         var r = playEl.getBoundingClientRect();
         play.x = r.width * xf; play.y = r.height * yf; play.active = true;

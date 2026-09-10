@@ -41,7 +41,7 @@
 <body>
   <a class="skip" href="#hakkimda" data-i18n="skip">İçeriğe geç</a>
 
-  <!-- Açılış perdesi: çizgi video yüklendikçe uzar, sonra filmin ufuk çizgisine dönüşür -->
+  <!-- Açılış perdesi: çizgi kısa bir dolumla uzar, sonra filmin ufuk çizgisine dönüşür -->
   <div class="loader" aria-hidden="true">
     <div class="loader__line"><span class="loader__fill"></span></div>
     <p class="loader__meta"><span class="loader__name">Kıvanç Karademir</span><span class="loader__pct">0</span></p>
@@ -79,15 +79,15 @@
 
   <main>
     <!-- BÖLÜM 1: SİNEMATİK GİRİŞ
-         Kaydırma videonun zamanını sürer. Metinler videonun kendi oynatma
-         kafasından okunur; sahne aralıkları assets/js/main.js > SCENES -->
-    <section class="film" id="film" data-sc-act="scrub" data-sc-span="6.4" data-sc-clip-map="travel" data-sc-lerp="0.2" aria-label="Giriş" data-i18n-attr="aria-label:aria.intro">
+         Film canlı çizilir (assets/js/film.js): kaydırma hikâyeyi ilerletir, zaman
+         durunca da hareketi sürdürür. Sahne aralıkları assets/js/main.js > SCENES -->
+    <section class="film" id="film" data-sc-act="scrub" data-sc-span="6.4" aria-label="Giriş" data-i18n-attr="aria-label:aria.intro">
       <div class="film__stage" data-sc-stage>
         <picture>
           <source media="(max-width: 860px)" srcset="public/video/poster-mobile.jpg">
           <img class="sc-stage__poster film__poster" src="public/video/poster.jpg" alt="" width="1920" height="1080">
         </picture>
-        <video class="film__video" data-sc-scrub data-src-desktop="public/video/hero.mp4" data-src-mobile="public/video/hero-mobile.mp4" muted playsinline aria-hidden="true"></video>
+        <canvas class="film__live" aria-hidden="true"></canvas>
         <!-- Işık teli: filmin ilk karelerindeki çizgi burada çizilir, fareyle titreşir -->
         <canvas class="film__wire" aria-hidden="true"></canvas>
         <picture class="film__still">
@@ -104,7 +104,7 @@
             <p class="film__role"><span class="ln"><span class="ln__i" data-i18n="hero.role1">Perakende Kanal Satış Yöneticisi</span></span><span class="ln"><span class="ln__i" data-i18n="hero.role2">Türk Telekom</span></span></p>
           </div>
 
-          <!-- Sahne: Soru. İmza hareketi: cümle dağınık girer, video toparlandıkça kendini düzeltir -->
+          <!-- Sahne: Soru. İmza hareketi: cümle dağınık girer, film toparlandıkça kendini düzeltir -->
           <div class="scene scene--horizon scene--question" data-scene="soru">
             <p class="scene__lead"><span class="ln"><span class="ln__i" data-i18n="hero.lead">Beni ileriye taşıyan temel soru</span></span></p>
             <h2 class="question" aria-label="Bunu nasıl daha iyi yapabiliriz?" data-i18n-attr="aria-label:hero.question"><span class="w">Bunu</span> <span class="w">nasıl</span> <span class="w">daha</span> <span class="w">iyi</span> <span class="w">yapabiliriz?</span></h2>
@@ -393,6 +393,7 @@
 
   <script src="assets/js/scrollcraft.js" defer></script>
   <script src="assets/js/i18n.js" defer></script>
+  <script src="assets/js/film.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 </body>
 </html>

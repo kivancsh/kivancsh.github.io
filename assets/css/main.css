@@ -232,8 +232,10 @@ html:not(.js) .loader, .is-reduced .loader { display: none; }
   background: var(--night);
   isolation: isolate;
 }
-.film__video, .film__poster { z-index: 0; }
-.film__video { transition: opacity 600ms var(--ease); }
+.film__poster { z-index: 0; }
+/* canlı film: afiş karesinin üstünde; ilk karesini çizince afiş gizlenir */
+.film__live { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+.film__stage.is-live .film__poster { visibility: hidden; }
 .film__still { display: none; }
 .film__scrim {
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
@@ -766,7 +768,7 @@ html[lang="en"] .scene__figure .pct { margin: 0.08em 0 0 0.04em; }
 /* ============================================= HAREKET AZALTILMIŞ / JS YOK ===
    Film pinlenmez; afiş karesi ve bütün sahne metinleri okunur bir bölüm olur. */
 html:not(.js) .film__stage, .is-reduced .film__stage { position: relative; height: auto; min-height: 100svh; }
-html:not(.js) .film__video, .is-reduced .film__video, html:not(.js) .film__poster, .is-reduced .film__poster { display: none; }
+html:not(.js) .film__live, .is-reduced .film__live, html:not(.js) .film__poster, .is-reduced .film__poster { display: none; }
 html:not(.js) .film__still, .is-reduced .film__still { display: block; position: absolute; inset: 0; }
 html:not(.js) .film__still img, .is-reduced .film__still img { width: 100%; height: 100%; object-fit: cover; }
 html:not(.js) .film__veil, .is-reduced .film__veil, html:not(.js) .scene--dawn, .is-reduced .scene--dawn { display: none; }

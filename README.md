@@ -23,7 +23,7 @@ Tarayıcıda: http://127.0.0.1:4500
 
 `--bind 127.0.0.1` önemli: onsuz sunucu aynı ağdaki herkese açılır.
 
-Dosyayı çift tıklayıp açmak (`file://`) videoyu yüklemez; mutlaka bir sunucu üzerinden aç.
+Dosyayı çift tıklayıp açmak (`file://`) yazı tiplerini yüklemez; mutlaka bir sunucu üzerinden aç.
 
 ## Klasörler
 
@@ -32,10 +32,11 @@ Dosyayı çift tıklayıp açmak (`file://`) videoyu yüklemez; mutlaka bir sunu
 | `index.html` | Sayfanın tamamı (metinler burada) |
 | `assets/css/main.css` | Tasarım: renkler, tipografi, bölümler, mobil |
 | `assets/js/main.js` | Koreografi ve ayarlar: `CONTACT`, `CV_URL`, `SCENES`, `TIMELINE`, `SHIFT` |
+| `assets/js/film.js` | Giriş filmi: her karede canlı çizilir (`tools/film.swift` ile aynı sahne) |
 | `assets/js/i18n.js` | İngilizce metinler (Türkçeler `index.html` içinde) |
 | `assets/fonts/` | Archivo (SIL Open Font License), kendi sunucumuzdan |
 | `assets/js/scrollcraft.js`, `assets/css/scrollcraft.css` | Kaydırma motoru (değiştirilmez) |
-| `public/video/` | `hero.mp4` (masaüstü), `hero-mobile.mp4` (mobil), afiş kareleri |
+| `public/video/` | Filmin afiş kareleri: ilk boyama, hareket azaltılmış mod, paylaşım kartı |
 | `public/img/` | Portre |
 | `public/logos/` | Şirket logoları (beyaz zemini temizlenmiş PNG) |
 | `public/cv/` | İndirilebilir CV |
@@ -64,18 +65,17 @@ tutar; https://www.linkedin.com/post-inspector/ ile yeniletebilirsin.
 
 **Vurgu rengi kuralı:** havuz mavisi yalnızca rakamlarda kullanılır. Bir rakama `class="num"` ver.
 
-**Kendi videonu kullanmak:** dosyayı `public/video/hero.mp4` (yatay) ve
-`public/video/hero-mobile.mp4` (dikey) olarak koy. Kaydırmada akıcı olması için sık anahtar
-kareyle kodlanmalı (ör. ffmpeg `-g 8 -keyint_min 8 -an -movflags +faststart`). Sonra
-`assets/js/main.js` içindeki `SCENES` aralıklarını videondaki sahne geçişlerine göre ayarla
-(0 = başlangıç, 1 = son).
+**Giriş filmi:** video değil, `assets/js/film.js` her karede canlı çizer. Kaydırma hikâyeyi
+ilerletir; kaydırma durunca da kamera nefes alır, düğümler süzülür, ağda ve sütunlarda ışık akar;
+kaydırma hızı kamerayı ileri (aşağı) ya da geri (yukarı) atar. Sahne verisi, kamera ve izdüşüm
+`tools/film.swift` ile birebir aynıdır (aynı tohum): birini değiştirirsen diğerini de güncelle ve
+afiş karelerini yeniden üret. Sahne metinlerinin aralıkları `assets/js/main.js` > `SCENES`
+(0 = başlangıç, 1 = son). Donanım yetişmezse film kendini kademeli sadeleştirir.
 
-**Filmi yeniden üretmek** (Xcode Komut Satırı Araçları yeterli):
+**Afiş karelerini yeniden üretmek** (Xcode Komut Satırı Araçları yeterli):
 
 ```bash
 swiftc -O tools/film.swift -o tools/.film
-tools/.film desktop public/video/hero.mp4
-tools/.film mobile public/video/hero-mobile.mp4
 tools/.film posters public/video
 ```
 
@@ -83,4 +83,5 @@ tools/.film posters public/video
 
 `http://127.0.0.1:4500/?qa` açılış perdesini atlar; `window.__kk.apply(p)` filmin istenen
 noktadaki metin durumunu, `__kk.lang('en')` dili, `__kk.play(x, y)` kapanış cümlesinin dağılmasını
-uygular, `__kk.net('opt')` canlı ağın görünümünü değiştirir. Görsel kontrol içindir.
+uygular, `__kk.film(p, hız)` filmi istenen anda (hız: -1 yukarı, 1 aşağı kaydırma) çizer,
+`__kk.net('opt')` canlı ağın görünümünü değiştirir. Görsel kontrol içindir.

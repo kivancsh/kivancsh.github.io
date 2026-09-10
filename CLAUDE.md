@@ -12,7 +12,8 @@
 - `assets/css/main.css`: renk ve ölçü jetonları (`:root`), bölümler, mobil düzen
 - `assets/js/main.js`: koreografi. Üstte `CONTACT` (iletişim) ve `SCENES` (film zaman çizelgesi)
 - `assets/js/scrollcraft.js`, `assets/css/scrollcraft.css`: kaydırma motoru, değiştirilmez
-- `public/video/`: `hero.mp4` (1920x1080), `hero-mobile.mp4` (720x1280), afiş kareleri
+- `assets/js/film.js`: giriş filmi, her karede canlı çizilir (video yok). `tools/film.swift` ile aynı sahne, kamera ve tohum
+- `public/video/`: filmin afiş kareleri (ilk boyama, hareket azaltılmış mod, paylaşım kartı)
 - `public/img/`: portre, `public/logos/`: şirket logoları
 - `tools/*.swift`: filmi, logoları ve paleti üreten araçlar (makinede node ve ffmpeg yok, Swift var)
 - `assets/js/i18n.js`: İngilizce metinler; Türkçe asıl kaynak `index.html` (`data-i18n` anahtarları)
@@ -37,7 +38,8 @@ python3 -m http.server 4500 --bind 127.0.0.1
 
 - Bölüm başlıkları birebir: Hakkımda, Stajlar, Eğitim Programları, İş Tecrübeleri
 - Görünür metinde uzun tire (— ya da –) kullanılmaz; tarih aralıkları kısa tireyle (2023-2024)
-- Film metinleri `SCENES` aralıklarına bağlıdır; video değişirse aralıklar da güncellenir
+- Film metinleri `SCENES` aralıklarına bağlıdır; film değişirse aralıklar da güncellenir
+- `film.js` ile `tools/film.swift` birlikte değişir: sahne ya da kamera değişirse ikisi de güncellenir, afişler yeniden üretilir
 - E-posta kaynakta düz yazılmaz; `CONTACT` içinde iki parçadan birleştirilir
 - Her yeni görünür metin iki dilde: Türkçesi HTML'de, İngilizcesi `i18n.js` içinde
 - Kariyer yolculuğu tarihleri LinkedIn profilinden; P&G VIA yalnızca yıl olarak biliniyor (2022)

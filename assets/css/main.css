@@ -824,3 +824,60 @@ html:not(.js) .film__role, .is-reduced .film__role { position: static; margin-to
   .is-reduced .flip:hover .flip__back, .is-reduced .flip:focus-visible .flip__back { opacity: 1; }
 }
 .is-reduced .jl { opacity: 1; }
+
+/* ---------------------------------------------------- ışık teli (ilk ekran) --
+   Filmin ilk karelerinde çizgi yok; aynı yere bu tuval çizer. Fareyle esner,
+   kaydırma başlayınca düzleşip filmdeki çizgiye devreder. */
+.film__wire { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.is-reduced .film__wire, html:not(.js) .film__wire { display: none; }
+
+/* ------------------------------------------------------------- canlı ağ --
+   Filmin gece paletinde bir sahne; tema ne olursa olsun gece zemini. */
+.net { padding-block: clamp(1rem, 3vw, 2.5rem) clamp(4rem, 8vw, 7rem); }
+.net__head { max-width: 48rem; }
+.net__title { font-size: clamp(2rem, 4.2vw, 4.2rem); font-weight: 800; font-stretch: 74%; line-height: 0.95; letter-spacing: -0.03em; }
+.net__sub { margin-top: 0.9rem; color: var(--fg-soft); }
+.net__stage {
+  position: relative; margin-top: clamp(1.75rem, 3.5vw, 2.75rem);
+  aspect-ratio: 16 / 8; min-height: 24rem; border-radius: var(--r); overflow: hidden; isolation: isolate;
+  background: radial-gradient(120% 95% at 55% 60%, #182A40 0%, var(--night) 68%);
+  color: var(--bone);
+}
+.net__canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
+.net__canvas.is-drag { cursor: grabbing; }
+.net__readout {
+  position: absolute; top: clamp(1rem, 2vw, 1.75rem); right: clamp(1rem, 2vw, 1.75rem); z-index: 2;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 0.9rem; text-align: right; pointer-events: none;
+}
+.net__fig { display: flex; flex-direction: column; align-items: flex-end; }
+.net__num {
+  font-size: clamp(2.6rem, 5.6vw, 5.2rem); font-weight: 260; font-stretch: 118%;
+  line-height: 0.88; letter-spacing: -0.04em; color: var(--pool-night); font-variant-numeric: tabular-nums;
+}
+.net__cap { margin-top: 0.3rem; font-size: 0.95rem; font-weight: 550; color: var(--bone); }
+.net__note { font-size: 0.85rem; color: var(--bone-soft); }
+.net__modes {
+  position: absolute; left: clamp(0.75rem, 1.6vw, 1.25rem); bottom: clamp(0.75rem, 1.6vw, 1.25rem); z-index: 2;
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+}
+.net__modes button {
+  min-height: 44px; padding: 0.55rem 1.05rem; border-radius: 999px;
+  border: 1px solid rgb(230 237 241 / 0.3); background: rgb(15 21 35 / 0.55); color: var(--bone);
+  font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  transition: background-color 250ms var(--ease), color 250ms var(--ease), border-color 250ms var(--ease);
+}
+.net__modes button:hover { border-color: rgb(230 237 241 / 0.6); }
+.net__modes button[aria-pressed="true"] { background: var(--bone); color: var(--night); border-color: var(--bone); }
+.net__modes button:active { transform: scale(0.98); }
+.net__modes button:focus-visible { outline-color: var(--bone); }
+
+@media (max-width: 860px) {
+  .net__stage { aspect-ratio: 4 / 5; min-height: 0; }
+  .net__readout { left: 1rem; right: auto; align-items: flex-start; text-align: left; flex-direction: row; gap: 1.5rem; }
+  .net__fig { align-items: flex-start; }
+  .net__num { font-size: clamp(2.2rem, 11vw, 3.2rem); }
+  .net__modes { left: 0.75rem; right: 0.75rem; }
+  .net__modes button { flex: 1 1 auto; padding-inline: 0.6rem; font-size: 0.85rem; }
+}
+

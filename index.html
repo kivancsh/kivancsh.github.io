@@ -88,6 +88,8 @@
           <img class="sc-stage__poster film__poster" src="public/video/poster.jpg" alt="" width="1920" height="1080">
         </picture>
         <video class="film__video" data-sc-scrub data-src-desktop="public/video/hero.mp4" data-src-mobile="public/video/hero-mobile.mp4" muted playsinline aria-hidden="true"></video>
+        <!-- Işık teli: filmin ilk karelerindeki çizgi burada çizilir, fareyle titreşir -->
+        <canvas class="film__wire" aria-hidden="true"></canvas>
         <picture class="film__still">
           <source media="(max-width: 860px)" srcset="public/video/still-mobile.jpg">
           <img src="public/video/still.jpg" alt="" loading="lazy" width="1920" height="1080">
@@ -296,6 +298,24 @@
           </div>
         </article>
       </div>
+
+      <!-- Canlı ağ: filmdeki 70 bayi ve 300 personel burada dokunulabilir. Sürükleyerek döner,
+           görünüm düğmeleri gerçek metrikleri gösterir (70+, 300+, 15+, %62). -->
+      <figure class="net wrap" aria-labelledby="net-title">
+        <div class="net__head">
+          <h3 class="net__title" id="net-title" data-reveal="lines" data-i18n="net.title">Sahadaki ağ</h3>
+          <p class="net__sub" data-reveal="fade" data-i18n="net.sub">Yönettiğim perakende kanalı: 70+ bayi ve 300+ personel. Sürükleyerek çevir, görünümü değiştir.</p>
+        </div>
+        <div class="net__stage">
+          <canvas class="net__canvas" role="img" aria-label="70 bayi ve 300 personelden oluşan ağın etkileşimli görseli" data-i18n-attr="aria-label:net.aria"></canvas>
+          <div class="net__readout" aria-live="polite"></div>
+          <div class="net__modes" role="group" aria-label="Görünüm" data-i18n-attr="aria-label:net.modes">
+            <button type="button" data-mode="ag" aria-pressed="true" data-i18n="net.m.ag">Ağ</button>
+            <button type="button" data-mode="saha" aria-pressed="false" data-i18n="net.m.saha">Saha ziyareti</button>
+            <button type="button" data-mode="opt" aria-pressed="false" data-i18n="net.m.opt">Optimizasyon</button>
+          </div>
+        </div>
+      </figure>
 
       <!-- Türk Telekom metrikleri. Masaüstünde yatay şerit (kaydırmayla yana akar), mobilde gruplu liste -->
       <div class="ledger" id="ticari-performans" aria-label="Türk Telekom ticari performans metrikleri" data-i18n-attr="aria-label:aria.ledger">

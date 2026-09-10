@@ -83,4 +83,4 @@ tools/.film posters public/video
 
 `http://127.0.0.1:4500/?qa` açılış perdesini atlar; `window.__kk.apply(p)` filmin istenen
 noktadaki metin durumunu, `__kk.lang('en')` dili, `__kk.play(x, y)` kapanış cümlesinin dağılmasını
-uygular. Görsel kontrol içindir.
+uygular, `__kk.net('opt')` canlı ağın görünümünü değiştirir. Görsel kontrol içindir.

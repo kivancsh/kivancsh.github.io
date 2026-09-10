@@ -11,7 +11,8 @@
      5. İmza hareketi: "Bunu nasıl daha iyi yapabiliriz?" kendini düzeltir
      6. Kariyer yolculuğu: tek yıl ekseni, kaydırdıkça ilerleyen oynatma çizgisi
      7. Önce / sonra grafiği, dönen kartlar, oynanabilir kapanış cümlesi
-     8. Bölüm açılımları, portre, sayaçlar, menü, iletişim
+     8. Işık teli (ilk ekran) ve canlı ağ (sürüklenebilir, görünüm düğmeli)
+     9. Bölüm açılımları, portre, sayaçlar, menü, iletişim
    ========================================================================== */
 (function () {
   'use strict';
@@ -25,6 +26,7 @@
     linkedin: 'https://www.linkedin.com/in/alperenk%C4%B1van%C3%A7karademir/'
   };
   var CV_URL = 'public/cv/Kivanc-Karademir-CV.pdf';
+
 
   // Film zaman çizelgesi (0..1). tools/film.swift içindeki sahnelerle aynı.
   // [giriş başlar, tam görünür, çıkış başlar, tamamen çıktı]
@@ -610,6 +612,265 @@
     addEventListener('pointercancel', function () { play.down = false; play.active = false; kickPlay(); });
   }
 
+  /* ------------------------------------------------------------ canlı ağ --
+     Filmdeki ağ burada dokunulabilir: 70 bayi, 300 personel. Sürükleyerek
+     döner. Görünümler yalnızca gerçek metrikleri gösterir:
+     Ağ (70+ bayi, 300+ personel), Saha ziyareti (15+ aylık), Optimizasyon (%62). */
+  var net = {
+    stage: $('.net__stage'), canvas: $('.net__canvas'), readout: $('.net__readout'),
+    ctx: null, w: 0, h: 0, dpr: 1, f: 1, zoom: 1, portrait: false, cx: 0, cy: 0, camZ: 7.4, visible: false,
+    mode: 'ag', yaw: -0.55, pitch: 0.24, vy: 0, vp: 0, drag: null, auto: 1,
+    morph: 0, morphTarget: 0, routeStart: 0, mx: -1, my: -1, dirty: true, sprite: null, countRun: 0
+  };
+  (function buildNetData() {
+    var seed = 70300;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+    function gauss() { return (rnd() + rnd() + rnd() + rnd() - 2) / 2; }
+    net.nodes = [];
+    for (var i = 0; i < 70; i++) {
+      net.nodes.push({ c: [gauss() * 2.7, gauss() * 1.25, gauss() * 2.7], g: null, s: 0.8 + rnd() * 0.6, ph: rnd() * 6.28, staff: [], d: 0 });
+    }
+    // Optimizasyon düzeni: aynı düğümler ızgaraya, personel her bayinin altında sıraya.
+    // Yatay sahnede 14 x 5, dikey (mobil) sahnede dönerken taşmasın diye 10 x 7.
+    var byX = net.nodes.map(function (n, k) { return k; }).sort(function (a, b) { return net.nodes[a].c[0] - net.nodes[b].c[0]; });
+    function grid(cols, rows, sx, sz, key, dkey) {
+      for (var c = 0; c < cols; c++) {
+        byX.slice(c * rows, c * rows + rows)
+          .sort(function (a, b) { return net.nodes[a].c[2] - net.nodes[b].c[2]; })
+          .forEach(function (j, r) {
+            net.nodes[j][key] = [(c - (cols - 1) / 2) * sx, 0.7, (r - (rows - 1) / 2) * sz];
+            net.nodes[j][dkey] = c / (cols - 1) * 0.3;
+          });
+      }
+    }
+    grid(14, 5, 0.44, 0.74, 'g', 'd');
+    grid(10, 7, 0.44, 0.5, 'gp', 'dp');
+    net.dots = [];
+    for (var k = 0; k < 300; k++) {
+      var j = k % 70, n = net.nodes[j], dir = [gauss(), gauss(), gauss()];
+      var len = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]) || 1, rad = 0.24 + rnd() * 0.46;
+      var slot = n.staff.length; n.staff.push(k);
+      net.dots.push({ j: j, o: [dir[0] / len * rad, dir[1] / len * rad, dir[2] / len * rad], drop: 0.16 * (slot + 1) });
+    }
+    net.edges = [];
+    net.nodes.forEach(function (n, a) {
+      net.nodes.map(function (m, b) {
+        var dx = m.c[0] - n.c[0], dy = m.c[1] - n.c[1], dz = m.c[2] - n.c[2];
+        return [dx * dx + dy * dy + dz * dz, b];
+      }).sort(function (p, q) { return p[0] - q[0]; }).slice(1, 3).forEach(function (e) {
+        if (!net.edges.some(function (x) { return x[0] === e[1] && x[1] === a; })) net.edges.push([a, e[1]]);
+      });
+    });
+    // Saha ziyareti: 15 bayilik rota (en yakın komşu turu)
+    var pool = [];
+    for (var q = 0; q < 70; q += 5) pool.push(q);
+    pool.push(67);
+    function d2(a, b) { var A = net.nodes[a].c, B = net.nodes[b].c; return (A[0] - B[0]) * (A[0] - B[0]) + (A[1] - B[1]) * (A[1] - B[1]) + (A[2] - B[2]) * (A[2] - B[2]); }
+    var route = [pool.shift()];
+    while (pool.length) {
+      var last = route[route.length - 1];
+      pool.sort(function (a, b) { return d2(last, a) - d2(last, b); });
+      route.push(pool.shift());
+    }
+    net.route = route;
+    // parlama dokusu bir kez hazırlanır
+    var sp = document.createElement('canvas'); sp.width = sp.height = 64;
+    var sx = sp.getContext('2d'), gr = sx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, 'rgba(124,203,242,0.9)'); gr.addColorStop(0.25, 'rgba(124,203,242,0.28)'); gr.addColorStop(1, 'rgba(124,203,242,0)');
+    sx.fillStyle = gr; sx.fillRect(0, 0, 64, 64);
+    net.sprite = sp;
+  })();
+
+  function sizeNet() {
+    if (!net.canvas) return;
+    var r = net.stage.getBoundingClientRect();
+    net.dpr = Math.min(devicePixelRatio || 1, 2);
+    net.w = r.width; net.h = r.height;
+    net.canvas.width = Math.round(r.width * net.dpr);
+    net.canvas.height = Math.round(r.height * net.dpr);
+    net.ctx = net.canvas.getContext('2d');
+    var portrait = net.portrait = r.height > r.width;
+    net.f = (portrait ? r.width * 1.25 : Math.min(r.width * 0.62, r.height * 1.35));
+    net.cx = r.width * (portrait ? 0.5 : 0.46);
+    net.cy = r.height * (portrait ? 0.52 : 0.5);
+    net.dirty = true;
+  }
+  function netProject(x, y, z) {
+    var cy = Math.cos(net.yaw), sy = Math.sin(net.yaw), cp = Math.cos(net.pitch), sp = Math.sin(net.pitch);
+    var x1 = x * cy - z * sy, z1 = x * sy + z * cy;
+    var y1 = y * cp - z1 * sp, z2 = y * sp + z1 * cp;
+    var zc = z2 + net.camZ, k = net.f * net.zoom / zc;
+    return [net.cx + x1 * k, net.cy - y1 * k, zc];
+  }
+  function netReadout() {
+    if (!net.readout) return;
+    var u = ui('net') || {};
+    net.readout.textContent = '';
+    function fig(num, cap) {
+      var f = el('span', 'net__fig');
+      var n = el('span', 'net__num', num);
+      f.appendChild(n); f.appendChild(el('span', 'net__cap', cap));
+      net.readout.appendChild(f);
+      return n;
+    }
+    if (net.mode === 'ag') { fig('70+', u.dealers); fig('300+', u.staff); }
+    else if (net.mode === 'saha') { fig('15+', u.visits); }
+    else {
+      var n = fig(LANG === 'en' ? '62%' : '%62', u.eff);
+      n.parentNode.appendChild(el('span', 'net__note', u.same));
+      if (!reduce) {
+        var run = ++net.countRun, t0 = performance.now();
+        (function tick(now) {
+          if (run !== net.countRun) return;
+          var v = Math.round(62 * expoOut((now - t0) / 1300));
+          n.textContent = LANG === 'en' ? v + '%' : '%' + v;
+          if (v < 62) requestAnimationFrame(tick);
+        })(t0);
+      }
+    }
+  }
+  function setNetMode(mode) {
+    net.mode = mode;
+    net.morphTarget = mode === 'opt' ? 1 : 0;
+    if (reduce) net.morph = net.morphTarget;
+    net.routeStart = performance.now();
+    $$('.net__modes button').forEach(function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-mode') === mode ? 'true' : 'false'); });
+    netReadout();
+    net.dirty = true;
+  }
+  $$('.net__modes button').forEach(function (b) {
+    b.addEventListener('click', function () { setNetMode(b.getAttribute('data-mode')); });
+  });
+  if (net.canvas) {
+    net.canvas.addEventListener('pointerdown', function (e) {
+      net.drag = { x: e.clientX, y: e.clientY };
+      try { net.canvas.setPointerCapture(e.pointerId); } catch (err) {}
+      net.canvas.classList.add('is-drag'); net.auto = 0;
+    });
+    net.canvas.addEventListener('pointermove', function (e) {
+      var r = net.canvas.getBoundingClientRect();
+      net.mx = e.clientX - r.left; net.my = e.clientY - r.top; net.dirty = true;
+      if (!net.drag) return;
+      var dx = e.clientX - net.drag.x, dy = e.clientY - net.drag.y;
+      net.drag.x = e.clientX; net.drag.y = e.clientY;
+      net.yaw += dx * 0.006; net.pitch = clamp(net.pitch + dy * 0.004, -0.2, 0.95);
+      net.vy = dx * 0.006; net.vp = dy * 0.004;
+    });
+    var endDrag = function () {
+      if (!net.drag) return;
+      net.drag = null; net.canvas.classList.remove('is-drag');
+      setTimeout(function () { if (!net.drag) net.auto = 1; }, 2600);
+    };
+    net.canvas.addEventListener('pointerup', endDrag);
+    net.canvas.addEventListener('pointercancel', endDrag);
+    net.canvas.addEventListener('pointerleave', function () { net.mx = -1; net.dirty = true; });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (en) { net.visible = en[0].isIntersecting; net.dirty = true; }, { rootMargin: '100px 0px' }).observe(net.stage);
+    } else { net.visible = true; }
+  }
+  function drawNet(now) {
+    if (!net.ctx || !net.w) return;
+    var moving = !reduce || net.drag || Math.abs(net.vy) > 1e-4 || net.morph !== net.morphTarget;
+    if (!moving && !net.dirty) return;
+    net.dirty = false;
+    if (!net.drag) {
+      net.yaw += net.vy; net.pitch = clamp(net.pitch + net.vp, -0.2, 0.95);
+      net.vy *= 0.94; net.vp *= 0.9;
+      if (!reduce) net.yaw += 0.0015 * net.auto;
+    }
+    net.morph += (net.morphTarget - net.morph) * (reduce ? 1 : 0.055);
+    if (Math.abs(net.morph - net.morphTarget) < 0.001) net.morph = net.morphTarget;
+    var t = now / 1000, ctx = net.ctx, i, j, p;
+    ctx.setTransform(net.dpr, 0, 0, net.dpr, 0, 0);
+    ctx.clearRect(0, 0, net.w, net.h);
+    var gk = net.portrait ? 'gp' : 'g', dk = net.portrait ? 'dp' : 'd';
+    net.zoom = net.portrait ? 1 - 0.12 * net.morph : 1;
+
+    // düğüm konumları (bulut ile ızgara arasında, soldan sağa dalga halinde)
+    var P = new Array(net.nodes.length), E = new Array(net.nodes.length);
+    for (i = 0; i < net.nodes.length; i++) {
+      var n = net.nodes[i], G = n[gk], e = smoother((net.morph - n[dk]) / 0.7);
+      var wob = reduce ? 0 : (1 - e) * 0.08;
+      var x = lerp(n.c[0] + Math.sin(t * 0.6 + n.ph) * wob, G[0], e);
+      var y = lerp(n.c[1] + Math.cos(t * 0.5 + n.ph) * wob, G[1], e);
+      var z = lerp(n.c[2], G[2], e);
+      P[i] = netProject(x, y, z); P[i].push(x, y, z); E[i] = e;
+    }
+    // üzerine gelinen bayi
+    var hover = -1, best = 22 * 22;
+    if (net.mx >= 0 && !net.drag) {
+      for (i = 0; i < P.length; i++) {
+        var ddx = P[i][0] - net.mx, ddy = P[i][1] - net.my, dd = ddx * ddx + ddy * ddy;
+        if (dd < best) { best = dd; hover = i; }
+      }
+    }
+    // ağ bağlantıları (düzene girince söner)
+    var edgeA = 0.2 * (1 - net.morph) * (net.mode === 'saha' ? 0.45 : 1);
+    if (edgeA > 0.004) {
+      ctx.lineWidth = 0.8;
+      for (i = 0; i < net.edges.length; i++) {
+        var a = P[net.edges[i][0]], b = P[net.edges[i][1]];
+        ctx.strokeStyle = 'rgba(230,237,241,' + (edgeA * clamp(1.5 - (a[2] + b[2]) / 16, 0.2, 1)).toFixed(3) + ')';
+        ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke();
+      }
+    }
+    // personel ve bayilerine bağlanan çizgiler
+    for (i = 0; i < net.dots.length; i++) {
+      var dt = net.dots[i], np = P[dt.j], ne = E[dt.j], DG = net.nodes[dt.j][gk];
+      var dx3 = lerp(np[3] + dt.o[0], DG[0], ne), dy3 = lerp(np[4] + dt.o[1], DG[1] - dt.drop, ne), dz3 = lerp(np[5] + dt.o[2], DG[2], ne);
+      p = netProject(dx3, dy3, dz3);
+      var hot = hover === dt.j, fog = clamp(1.6 - p[2] / 10, 0.25, 1);
+      ctx.strokeStyle = 'rgba(230,237,241,' + ((hot ? 0.55 : 0.1) * fog).toFixed(3) + ')';
+      ctx.lineWidth = hot ? 1 : 0.6;
+      ctx.beginPath(); ctx.moveTo(np[0], np[1]); ctx.lineTo(p[0], p[1]); ctx.stroke();
+      var r = clamp(1.25 * net.f / 900 * 7 / p[2], 0.7, 2.6);
+      ctx.fillStyle = 'rgba(230,237,241,' + ((hot ? 0.95 : 0.5) * fog).toFixed(3) + ')';
+      ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 6.2832); ctx.fill();
+    }
+    // saha ziyareti rotası: 15 bayi, çizilir ve üstünde bir ışık dolaşır
+    var visited = {};
+    if (net.mode === 'saha') {
+      var prog = reduce ? 1 : clamp((now - net.routeStart) / 2600, 0, 1);
+      var segs = net.route.length - 1, upto = prog * segs;
+      ctx.strokeStyle = 'rgba(124,203,242,0.9)'; ctx.lineWidth = 1.6;
+      ctx.beginPath();
+      for (i = 0; i <= Math.min(Math.floor(upto), segs); i++) {
+        p = P[net.route[i]]; visited[net.route[i]] = 1;
+        if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+      }
+      var fi = Math.floor(upto);
+      if (fi < segs) {
+        var pa = P[net.route[fi]], pb = P[net.route[fi + 1]], fr = upto - fi;
+        ctx.lineTo(lerp(pa[0], pb[0], fr), lerp(pa[1], pb[1], fr));
+      }
+      ctx.stroke();
+      if (!reduce) {
+        var loop = prog < 1 ? upto : ((now - net.routeStart - 2600) / 4200 % 1) * segs;
+        var li = Math.min(Math.floor(loop), segs - 1), lf = loop - li;
+        var qa = P[net.route[li]], qb = P[net.route[li + 1]];
+        var hx = lerp(qa[0], qb[0], lf), hy = lerp(qa[1], qb[1], lf);
+        ctx.drawImage(net.sprite, hx - 22, hy - 22, 44, 44);
+        ctx.fillStyle = '#E6EDF1'; ctx.beginPath(); ctx.arc(hx, hy, 2.4, 0, 6.2832); ctx.fill();
+      }
+    }
+    // bayiler
+    for (i = 0; i < P.length; i++) {
+      p = P[i];
+      var nf = clamp(1.7 - p[2] / 10, 0.3, 1), rr = net.nodes[i].s * clamp(3 * 7 / p[2], 1.6, 5.5) * (net.f / 700);
+      rr = clamp(rr, 1.6, 6.5);
+      var boost = (hover === i ? 1.8 : 1) * (visited[i] ? 1.5 : 1);
+      ctx.globalAlpha = clamp(0.55 * nf * boost, 0, 1);
+      var gs = rr * 7 * (hover === i ? 1.4 : 1);
+      ctx.drawImage(net.sprite, p[0] - gs / 2, p[1] - gs / 2, gs, gs);
+      ctx.globalAlpha = clamp((0.92 * nf + (hover === i ? 0.3 : 0)), 0, 1);
+      ctx.fillStyle = visited[i] ? '#BFE6FA' : '#E6EDF1';
+      ctx.beginPath(); ctx.arc(p[0], p[1], rr * 0.55, 0, 6.2832); ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+  sizeNet();
+  netReadout();
+
   /* ----------------------------------------------------------- iletişim -- */
   var contactList = $('[data-contact]');
   function buildContact() {
@@ -626,6 +887,7 @@
     if (CV_URL) add(CV_URL, ui('cv'), { download: true });
     contactList.hidden = !contactList.children.length;
   }
+
 
   /* ------------------------------------------------------------ sayaçlar -- */
   var counters = $$('[data-count]');
@@ -758,6 +1020,99 @@
   }
   computeHorizon();
 
+  /* ------------------------------------------------- ışık teli (ilk ekran) --
+     Filmin ilk karelerinde çizgi yok; ufuk çizgisini burada fiziksel bir tel
+     olarak çizeriz. Fare yaklaşınca tel ona doğru esner, üstünden geçince
+     titreşir; dokunmatikte çizgiye dokununca titreşir. Kaydırma başlayınca
+     düzleşir ve filmdeki (0.022'den itibaren beliren) çizgiye devreder. */
+  var wire = { el: $('.film__wire'), ctx: null, n: 0, y: null, v: null, w: 0, h: 0, dpr: 1, hz: 0,
+               px: -1, py: 0, lastPy: null, drawn: false, lastAlpha: -1 };
+  function sizeWire() {
+    if (!wire.el || reduce) return;
+    var r = stage.getBoundingClientRect();
+    wire.dpr = Math.min(devicePixelRatio || 1, 2);
+    wire.w = r.width; wire.h = r.height;
+    wire.el.width = Math.round(r.width * wire.dpr);
+    wire.el.height = Math.round(r.height * wire.dpr);
+    wire.hz = parseFloat(root.style.getPropertyValue('--horizon')) || r.height * (isMobile ? 0.4 : 0.56);
+    var n = clamp(Math.round(r.width / 9), 60, 220);
+    if (n !== wire.n) { wire.n = n; wire.y = new Float32Array(n); wire.v = new Float32Array(n); }
+    wire.ctx = wire.el.getContext('2d');
+    wire.drawn = false; wire.lastAlpha = -1;
+  }
+  function pluck(x, amp) {
+    if (!wire.n) return;
+    var i0 = Math.round(clamp(x / wire.w, 0, 1) * (wire.n - 1)), R = Math.max(4, Math.round(wire.n * 0.05));
+    for (var i = Math.max(1, i0 - R * 2); i < Math.min(wire.n - 1, i0 + R * 2); i++) {
+      var d = (i - i0) / R; wire.v[i] += amp * Math.exp(-d * d);
+    }
+  }
+  if (!reduce && wire.el) {
+    addEventListener('pointermove', function (e) {
+      if (e.pointerType !== 'mouse' || scrollY > innerHeight * 0.3) return;
+      var r = stage.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      if (wire.lastPy !== null && (wire.lastPy - wire.hz) * (y - wire.hz) < 0) {
+        pluck(x, clamp((y - wire.lastPy) * 0.5, -12, 12)); // telin üstünden geçildi
+      }
+      wire.px = x; wire.py = y; wire.lastPy = y;
+    }, { passive: true });
+    root.addEventListener('mouseleave', function () { wire.px = -1; wire.lastPy = null; });
+    stage.addEventListener('pointerdown', function (e) {
+      var r = stage.getBoundingClientRect(), y = e.clientY - r.top;
+      if (Math.abs(y - wire.hz) < 70) pluck(e.clientX - r.left, (y < wire.hz ? -1 : 1) * 10);
+    }, { passive: true });
+  }
+  function stepWire(p) {
+    if (!wire.ctx) return;
+    var alpha = 1 - smooth(span(0.018, 0.045, p));
+    if (alpha <= 0.002) {
+      if (wire.drawn) { wire.ctx.setTransform(1, 0, 0, 1, 0, 0); wire.ctx.clearRect(0, 0, wire.el.width, wire.el.height); wire.drawn = false; wire.lastAlpha = -1; }
+      return;
+    }
+    var flatten = smooth(span(0.003, 0.026, p));
+    var n = wire.n, y = wire.y, v = wire.v, i;
+    if (wire.px >= 0 && flatten < 0.99) {
+      var dy = wire.py - wire.hz, near = 1 - Math.abs(dy) / 120;
+      if (near > 0) {
+        var i0 = wire.px / wire.w * (n - 1), reach = n * 0.06, pull = clamp(dy, -46, 46) * near * (1 - flatten);
+        for (i = 1; i < n - 1; i++) {
+          var d = (i - i0) / reach, f = Math.exp(-d * d);
+          if (f > 0.02) v[i] += (pull * f - y[i]) * 0.018;
+        }
+      }
+    }
+    var energy = 0;
+    for (var s = 0; s < 2; s++) {
+      for (i = 1; i < n - 1; i++) {
+        var a = (y[i - 1] + y[i + 1] - 2 * y[i]) * 0.32 - y[i] * 0.003;
+        v[i] = (v[i] + a) * (0.984 - flatten * 0.25);
+      }
+      for (i = 1; i < n - 1; i++) { y[i] += v[i]; energy += Math.abs(v[i]) + Math.abs(y[i]) * 0.02; }
+    }
+    if (flatten > 0) for (i = 0; i < n; i++) { y[i] *= 1 - flatten * 0.3; v[i] *= 1 - flatten * 0.3; }
+    if (energy < 0.02 && wire.px < 0 && wire.drawn && wire.lastAlpha === alpha) return; // durgun: yeniden çizme
+    wire.lastAlpha = alpha;
+    var ctx = wire.ctx, step = wire.w / (n - 1);
+    ctx.setTransform(wire.dpr, 0, 0, wire.dpr, 0, 0);
+    ctx.clearRect(0, 0, wire.w, wire.h);
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.moveTo(0, wire.hz + y[0]);
+    for (i = 1; i < n - 1; i++) {
+      ctx.quadraticCurveTo(i * step, wire.hz + y[i], (i + 0.5) * step, wire.hz + (y[i] + y[i + 1]) / 2);
+    }
+    ctx.lineTo(wire.w, wire.hz + y[n - 1]);
+    ctx.lineWidth = 1.25;
+    ctx.strokeStyle = 'rgba(230,237,241,0.9)';
+    ctx.shadowColor = 'rgba(124,203,242,0.6)';
+    ctx.shadowBlur = 10;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+    wire.drawn = true;
+  }
+  sizeWire();
+
   /* --------------------------------------------------- açılış perdesi -- */
   var loader = $('.loader');
   var loaderPct = $('.loader__pct');
@@ -776,6 +1131,8 @@
     root.style.overflow = '';
     setTimeout(function () {
       loader.classList.add('is-done');
+      // perde kalkarken ışık teli bir kez titreşir: sayfanın canlı olduğunu söyler
+      if (!reduce) setTimeout(function () { pluck(wire.w * 0.32, -9); }, 350);
       boot.start = performance.now();
       if (location.hash) jumpToHash(location.hash, true);
     }, 280);
@@ -1103,6 +1460,7 @@
     buildShift();
     buildContact();
     refreshCounters();
+    netReadout();
     relayout(true);
   }
   $$('.lang button').forEach(function (b) {
@@ -1114,6 +1472,8 @@
   var relayoutTimer = null;
   function relayout(full) {
     computeHorizon();
+    sizeWire();
+    sizeNet();
     if (full) {
       scenes.forEach(function (s) { s.live = null; });
       prepareScenes();
@@ -1126,7 +1486,7 @@
   addEventListener('resize', function () {
     var nowMobile = matchMedia(mobileQuery).matches;
     if (nowMobile !== isMobile && !reduce) { location.reload(); return; }
-    if (isMobile && innerWidth === lastW) { computeHorizon(); return; } // yalnız adres çubuğu
+    if (isMobile && innerWidth === lastW) { computeHorizon(); sizeWire(); return; } // yalnız adres çubuğu
     lastW = innerWidth;
     clearTimeout(relayoutTimer);
     relayoutTimer = setTimeout(function () { relayout(true); }, 160);
@@ -1155,6 +1515,8 @@
     updateNav(p);
     updatePortrait();
     updateJourney();
+    if (!reduce && scrollY < innerHeight) stepWire(c01(p));
+    if (net.visible) drawNet(now);
     requestAnimationFrame(frame);
   }
 
@@ -1165,6 +1527,8 @@
       apply: function (p) { updateFilm(c01(p), 1); updateNav(p); updatePortrait(); updateJourney(); },
       lang: setLang,
       shift: runShift,
+      net: function (mode, yaw) { if (mode) setNetMode(mode); if (yaw != null) net.yaw = yaw; net.morph = net.morphTarget; net.auto = 0; net.visible = true; drawNet(performance.now() + 60000); },
+      wire: function (x, amp, steps) { pluck(wire.w * x, amp); for (var i = 0; i < (steps || 6); i++) stepWire(0); },
       play: function (xf, yf, n) {
         var r = playEl.getBoundingClientRect();
         play.x = r.width * xf; play.y = r.height * yf; play.active = true;

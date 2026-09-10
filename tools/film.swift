@@ -10,7 +10,8 @@
 //   tools/.film frames  <klasör>            (inceleme kareleri, JPG)
 //
 // Sahne akışı (T = 0..1, 12 sn):
-//   0.00-0.14  Işık   gece, ufukta tek bir ışık çizgisi, çizgi boyunca bir sinyal
+//   0.00-0.14  Işık   gece; 0.05'ten itibaren ufukta tek bir ışık çizgisi ve sinyal
+//              (0-0.05 arası çizgiyi sayfa çizer: fareyle titreşen ışık teli)
 //   0.14-0.36  Soru   çizgi onlarca ize bölünür, gürültüye dağılır, sonra düzene oturur
 //   0.36-0.56  Ağ     izler noktalara ayrışır: 70 parlak düğüm, 300 soluk nokta
 //   0.56-0.74  Veri   düğümler 14x5 ışık sütununa, noktalar zemin ızgarasına dizilir
@@ -285,6 +286,9 @@ func render(_ ctx: CGContext, _ T: Double, _ fmt: Format, _ scene: Scene) {
 
   // 2) Izler (Işık + Soru sahneleri)
   let traceAlpha = 1 - ramp(0.37, 0.45, T)
+  // İlk karelerde çizgi yok: sayfa kendi etkileşimli çizgisini aynı yere çizer
+  // (assets/js/main.js > ışık teli). Kaydırma başlayınca bu çizgi devralır.
+  let lineIn = ramp(0.022, 0.05, T)
   if traceAlpha > 0.002 {
     let fanIn = ramp(0.145, 0.225, T)
     let order = ramp(0.25, 0.345, T)
@@ -304,7 +308,7 @@ func render(_ ctx: CGContext, _ T: Double, _ fmt: Format, _ scene: Scene) {
         if s == 0 { path.move(to: CGPoint(x: x, y: y)) } else { path.addLine(to: CGPoint(x: x, y: y)) }
       }
       let spread = max(fanIn, order)
-      let a = traceAlpha * lerp(lerp(0.55, tr.alpha, spread), 0.09, order * 0.9)
+      let a = lineIn * traceAlpha * lerp(lerp(0.55, tr.alpha, spread), 0.09, order * 0.9)
       ctx.addPath(path)
       ctx.setStrokeColor(cg(tr.pool ? POOL_LIGHT : BONE, a))
       ctx.setLineWidth(lw * (tr.pool ? 1.3 : 1.05))
@@ -322,7 +326,7 @@ func render(_ ctx: CGContext, _ T: Double, _ fmt: Format, _ scene: Scene) {
       ctx.restoreGState()
     }
     // Sinyal: ilk sahnede çizgi boyunca soldan sağa ilerleyen ışık
-    let pulse = (T - 0.015) / 0.125
+    let pulse = (T - 0.05) / 0.095
     if pulse > -0.1 && pulse < 1.15 {
       let px = lerp(-0.08, 1.08, pulse) * W
       let pa = sin(Double.pi * clamp(pulse, 0, 1)) * (1 - fanIn)

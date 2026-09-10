@@ -66,6 +66,14 @@ window.KK_EN = {
   'work.tt.current': 'Present',
   'work.tt.text': 'While continuing to work as Retail Channel Sales Manager, I stood out especially in Commercial Performance through the efficiency and optimization I delivered.',
 
+  'net.title': 'The network in the field',
+  'net.sub': 'The retail channel I manage: 70+ dealers and 300+ staff. Drag to rotate, switch the view.',
+  'net.aria': 'Interactive visual of the network of 70 dealers and 300 staff',
+  'net.modes': 'View',
+  'net.m.ag': 'Network',
+  'net.m.saha': 'Field visits',
+  'net.m.opt': 'Optimization',
+
   'ledger.kicker': 'Commercial Performance',
   'ledger.lede': 'Nine metrics under three headings: scale in the field, efficiency and optimization, commercial results.',
   'ledger.g1': 'Field and team',
@@ -103,7 +111,8 @@ window.KK_UI = {
     before: 'Önce', after: 'Sonra', change: 'Değişim', base: 'Başlangıç = 100',
     tableCaption: 'Önce ve sonra, endeks (başlangıç = 100)',
     linkedin: 'LinkedIn', email: 'E-posta gönder', cv: 'CV’yi indir',
-    flip: 'Ayrıntıyı göster'
+    flip: 'Ayrıntıyı göster',
+    net: { dealers: 'bayi', staff: 'personel', visits: 'aylık saha ziyareti', eff: 'verimlilik artışı', same: 'Aynı ağ, düzene girmiş hali' }
   },
   en: {
     lanes: { work: 'Work', intern: 'Internship', program: 'Program', edu: 'Education' },
@@ -113,6 +122,7 @@ window.KK_UI = {
     before: 'Before', after: 'After', change: 'Change', base: 'Start = 100',
     tableCaption: 'Before and after, index (start = 100)',
     linkedin: 'LinkedIn', email: 'Send an email', cv: 'Download CV',
-    flip: 'Show details'
+    flip: 'Show details',
+    net: { dealers: 'dealers', staff: 'staff', visits: 'monthly field visits', eff: 'efficiency increase', same: 'The same network, organized' }
   }
 };

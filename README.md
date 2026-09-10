@@ -1,7 +1,8 @@
 # Kıvanç Karademir: kişisel kariyer sitesi
 
-Kaydırmayla oynatılan sinematik bir giriş filmi ve ardından Hakkımda, Stajlar,
-Eğitim Programları, İş Tecrübeleri bölümleri. Derleme adımı yok: düz HTML, CSS, JS.
+Kaydırmayla oynatılan sinematik bir giriş filmi ve ardından Hakkımda, Kariyer Yolculuğu,
+Stajlar, Eğitim Programları, İş Tecrübeleri ve İletişim bölümleri. Türkçe ve İngilizce.
+Derleme adımı yok: düz HTML, CSS, JS.
 
 ## Yayın
 
@@ -30,11 +31,15 @@ Dosyayı çift tıklayıp açmak (`file://`) videoyu yüklemez; mutlaka bir sunu
 |---|---|
 | `index.html` | Sayfanın tamamı (metinler burada) |
 | `assets/css/main.css` | Tasarım: renkler, tipografi, bölümler, mobil |
-| `assets/js/main.js` | Koreografi: film metinleri, imza cümlesi, sayaçlar, menü |
+| `assets/js/main.js` | Koreografi ve ayarlar: `CONTACT`, `CV_URL`, `ANALYTICS`, `SCENES`, `TIMELINE`, `SHIFT` |
+| `assets/js/i18n.js` | İngilizce metinler (Türkçeler `index.html` içinde) |
+| `assets/fonts/` | Archivo (SIL Open Font License), kendi sunucumuzdan |
 | `assets/js/scrollcraft.js`, `assets/css/scrollcraft.css` | Kaydırma motoru (değiştirilmez) |
 | `public/video/` | `hero.mp4` (masaüstü), `hero-mobile.mp4` (mobil), afiş kareleri |
 | `public/img/` | Portre |
 | `public/logos/` | Şirket logoları (beyaz zemini temizlenmiş PNG) |
+| `public/cv/` | İndirilebilir CV |
+| `public/og/` | LinkedIn paylaşım kartı (1200x630) |
 | `tools/` | Filmi, logoları ve paleti üreten Swift araçları |
 | `docs/` | Brief, tasarım DNA'sı, sahne kurgusu |
 
@@ -43,7 +48,25 @@ Dosyayı çift tıklayıp açmak (`file://`) videoyu yüklemez; mutlaka bir sunu
 **İletişim bilgisini değiştirmek:** `assets/js/main.js` en üstteki `CONTACT` nesnesi.
 E-posta kaynakta düz yazılmaz, iki parçadan birleştirilir. Bağlantılar kapanış bölümünde görünür.
 
-**Metin değiştirmek:** `index.html` içinde ilgili bölümü bul (yorum etiketleri: `BÖLÜM 1` ... `BÖLÜM 6`).
+**Metin değiştirmek:** Türkçesi `index.html` içinde (yorum etiketleri: `BÖLÜM 1` ... `BÖLÜM 7`),
+İngilizcesi `assets/js/i18n.js` içinde aynı `data-i18n` anahtarıyla. Yeni metin eklerken ikisine de yaz.
+
+**Dil:** sağ üstteki TR / EN. Seçim tarayıcıda hatırlanır; `?lang=en` ile doğrudan İngilizce açılır.
+
+**Kariyer yolculuğu:** `assets/js/main.js` > `TIMELINE`. Tarihler LinkedIn profilinden alındı.
+P&G VIA'nın tarihi eksik; aynı biçimde (`type: 'program'`) eklenince çizelgede görünür.
+
+**CV'yi güncellemek:** yeni dosyayı `public/cv/Kivanc-Karademir-CV.pdf` adıyla değiştir.
+
+**Ziyaretçi sayacı (GoatCounter):** https://www.goatcounter.com adresinde ücretsiz hesap aç,
+bir kod seç (ör. `kivanc`), `assets/js/main.js` içinde `ANALYTICS.goatcounter` değerine yaz.
+Panel yalnızca senin hesabınla açılır; ziyaret zamanı, geldiği yer (ör. LinkedIn), ülke ve cihaz
+görünür, kişinin kimliği görünmez (çerez kullanmaz). Kendi ziyaretlerini saydırmamak için siteyi
+bir kez `?sayac=kapat` ile aç (geri açmak için `?sayac=ac`).
+
+**Paylaşım kartı:** kaynağı `tools/og-card.html`. Değiştirirsen yerel sunucuda 1200x630 pencerede
+açıp görüntüsünü `public/og/og-card.jpg` olarak kaydet. LinkedIn eski önizlemeyi önbellekte
+tutar; https://www.linkedin.com/post-inspector/ ile yeniletebilirsin.
 
 **Vurgu rengi kuralı:** havuz mavisi yalnızca rakamlarda kullanılır. Bir rakama `class="num"` ver.
 
@@ -64,5 +87,6 @@ tools/.film posters public/video
 
 ## Test kancası
 
-`http://localhost:4500/?qa` açılış perdesini atlar ve `window.__kk.apply(p)` ile filmin
-istenen noktadaki metin durumunu uygular. Görsel kontrol içindir.
+`http://127.0.0.1:4500/?qa` açılış perdesini atlar; `window.__kk.apply(p)` filmin istenen
+noktadaki metin durumunu, `__kk.lang('en')` dili, `__kk.play(x, y)` kapanış cümlesinin dağılmasını
+uygular. Görsel kontrol içindir.

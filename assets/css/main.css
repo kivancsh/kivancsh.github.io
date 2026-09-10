@@ -10,6 +10,18 @@
    Şekil kuralı: levhalar ve görseller 14px köşe, etkileşimli öğeler hap.
    ========================================================================== */
 
+/* Archivo, kendi sunucumuzdan. Değişken: genişlik 62-125, ağırlık 100-900 */
+@font-face {
+  font-family: "Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
+  src: url("../fonts/archivo-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Archivo"; font-style: normal; font-weight: 100 900; font-stretch: 62% 125%; font-display: swap;
+  src: url("../fonts/archivo-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --night: #0F1523;
   --night-2: #172035;
@@ -29,6 +41,10 @@
   --accent: var(--pool);
   --line: color-mix(in oklab, var(--fg) 14%, transparent);
   --plate: var(--plate-light);
+  /* grafik: önce/sonra, tek ton iki kademe (dataviz doğrulayıcısından geçti) */
+  --chart-before: #6FA9C9;
+  --chart-after: #1A7FAE;
+  --grid: color-mix(in oklab, var(--fg) 9%, transparent);
 
   --font: "Archivo", "Helvetica Neue", Arial, system-ui, sans-serif;
   --ease: cubic-bezier(0.23, 1, 0.32, 1);
@@ -57,6 +73,8 @@
     --fg-soft: var(--bone-soft);
     --accent: var(--pool-night);
     --plate: #EEF2F4;
+    --chart-before: #3D6E8E;
+    --chart-after: #7CCBF2;
   }
 }
 
@@ -91,6 +109,11 @@ ul, ol { list-style: none; }
 }
 .skip:focus-visible { transform: none; }
 
+.sr-only {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
 .display {
   font-size: clamp(3.4rem, 9.6vw, 10.5rem);
   font-weight: 800;
@@ -101,6 +124,8 @@ ul, ol { list-style: none; }
 }
 
 /* Satır maskeleri: her satır kendi yarığından yükselir */
+.display--md { font-size: clamp(2.6rem, 6vw, 6.4rem); }
+
 .ln { display: block; overflow: hidden; padding-bottom: 0.13em; margin-bottom: -0.13em; }
 .ln__i { display: inline-block; }
 .film .ln__i { will-change: transform, opacity; }
@@ -150,6 +175,20 @@ html:not(.js) .loader, .is-reduced .loader { display: none; }
   backdrop-filter: blur(14px) saturate(1.1);
 }
 .nav__mark { font-weight: 700; font-stretch: 88%; font-size: 1.02rem; letter-spacing: -0.01em; }
+.nav__right { display: flex; align-items: center; gap: clamp(1rem, 2vw, 2rem); }
+.lang { display: inline-flex; align-items: center; }
+.lang button {
+  position: relative; min-width: 2.75rem; min-height: 44px; padding: 0 0.5rem;
+  border: 0; background: none; color: inherit; font: inherit;
+  font-size: 0.9rem; font-weight: 650; font-stretch: 100%; letter-spacing: 0.02em;
+  opacity: 0.5; cursor: pointer; transition: opacity 300ms var(--ease);
+}
+.lang button + button::before {
+  content: ""; position: absolute; left: 0; top: 50%; width: 1px; height: 0.9em;
+  background: currentColor; opacity: 0.35; transform: translateY(-50%);
+}
+.lang button:hover { opacity: 0.85; }
+.lang button[aria-pressed="true"] { opacity: 1; }
 .nav__links { display: flex; gap: clamp(1.25rem, 2.2vw, 2.25rem); }
 .nav__links a, .foot__top {
   position: relative; font-size: 0.95rem; font-weight: 500; padding-block: 0.4rem;
@@ -251,6 +290,9 @@ html:not(.js) .loader, .is-reduced .loader { display: none; }
   line-height: 0.82; letter-spacing: -0.04em;
 }
 .scene__figure .pct { font-size: 0.5em; font-weight: 300; margin-right: 0.04em; vertical-align: 0.55em; }
+/* İngilizcede yüzde işareti sayıdan sonra gelir */
+html[lang="en"] .scene__figure .ln__i { display: inline-flex; flex-direction: row-reverse; align-items: flex-start; }
+html[lang="en"] .scene__figure .pct { margin: 0.08em 0 0 0.04em; }
 .scene__title--dawn { color: var(--fg); font-size: clamp(3rem, 7.4vw, 8rem); }
 
 /* ------------------------------------------------------------- hakkımda -- */
@@ -337,8 +379,53 @@ html:not(.js) .loader, .is-reduced .loader { display: none; }
 }
 .program { display: flex; flex-direction: column; gap: 1rem; }
 .program:nth-child(2n) { margin-top: clamp(2rem, 5vw, 5.5rem); }
-.plate--tall { aspect-ratio: 3 / 4; }
-.plate--tall img { max-width: 76%; }
+/* Dönen kart: üstüne gelince (masaüstü) ya da dokununca döner */
+.flip {
+  position: relative; display: block; width: 100%; aspect-ratio: 3 / 4; padding: 0;
+  border: 0; border-radius: var(--r); background: none; color: inherit; font: inherit; text-align: left;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+}
+/* Perspektif dönüşümün içinde: WebKit <button> içindeki 3B zinciri düzleştirdiği için
+   ebeveyn perspective'e güvenilmez. Yüzler ayrıca görünürlükle de değişir. */
+.flip__inner {
+  position: absolute; inset: 0; transform-style: preserve-3d;
+  transform: perspective(1400px) rotateY(0deg);
+  transition: transform 950ms var(--ease-expo);
+}
+.flip__face {
+  position: absolute; inset: 0; border-radius: var(--r);
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  transition: visibility 0s linear 150ms;
+}
+.flip__front { visibility: visible; }
+.flip__back { visibility: hidden; }
+.flip__front img { max-width: 76%; }
+.flip__back {
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column; justify-content: space-between; gap: 1rem;
+  padding: clamp(1rem, 1.7vw, 1.6rem);
+  background: var(--fg); color: var(--bg);
+}
+.flip__text {
+  font-size: clamp(1rem, 0.86rem + 0.5vw, 1.3rem); font-weight: 500; font-stretch: 92%;
+  line-height: 1.32; letter-spacing: -0.012em; text-wrap: pretty;
+}
+.flip__who { font-size: 0.85rem; font-weight: 650; opacity: 0.65; }
+.flip__hint {
+  position: absolute; top: 0.75rem; right: 0.75rem; width: 1.9rem; height: 1.9rem;
+  display: grid; place-items: center; border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  color: var(--ink); font-size: 1.15rem; font-weight: 400; line-height: 1;
+}
+.flip[aria-pressed="true"] .flip__inner { transform: perspective(1400px) rotateY(180deg); }
+.flip[aria-pressed="true"] .flip__front { visibility: hidden; }
+.flip[aria-pressed="true"] .flip__back { visibility: visible; }
+.flip:focus-visible { outline-offset: 5px; }
+@media (hover: hover) and (pointer: fine) {
+  .flip:hover .flip__inner, .flip:focus-visible .flip__inner { transform: perspective(1400px) rotateY(180deg); }
+  .flip:hover .flip__front, .flip:focus-visible .flip__front { visibility: hidden; }
+  .flip:hover .flip__back, .flip:focus-visible .flip__back { visibility: visible; }
+}
 .program__name { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.45rem); font-weight: 650; font-stretch: 90%; letter-spacing: -0.01em; }
 
 /* --------------------------------------------------------- iş tecrübeleri -- */
@@ -485,16 +572,151 @@ html:not(.js) .loader, .is-reduced .loader { display: none; }
 
 @media (hover: hover) and (pointer: fine) {
   .roster__item:hover .roster__name { transform: translate3d(0.14em, 0, 0); }
-  .program .plate { transition: transform 700ms var(--ease); }
-  .program:hover .plate { transform: translate3d(0, -4px, 0); }
 }
+
+/* ------------------------------------------------------ kariyer yolculuğu --
+   Masaüstünde bölüm sabitlenir; kaydırma oynatma çizgisini 2018'den bugüne
+   taşır. Çubuklar oynatma çizgisi geçtikçe dolar, liste satırları yanar. */
+.journey { position: relative; }
+.journey__stage { display: flex; align-items: center; }
+.journey__inner { padding-block: clamp(5rem, 10vh, 7.5rem) clamp(2.5rem, 6vh, 4rem); }
+.journey__head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 2rem; }
+.journey__lede { margin-top: 1rem; color: var(--fg-soft); max-width: 34em; }
+.journey__year {
+  font-size: clamp(4rem, 9vw, 9.5rem); font-weight: 250; font-stretch: 118%;
+  line-height: 0.8; letter-spacing: -0.04em; color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.journey__year--m { display: none; }
+
+.gantt { position: relative; margin-top: clamp(1.75rem, 4.5vh, 3.25rem); --lab: 7.5rem; }
+.gantt__lane { display: grid; grid-template-columns: var(--lab) 1fr; align-items: center; }
+.gantt__label { font-size: 0.9rem; font-weight: 650; color: var(--fg-soft); }
+.gantt__track { position: relative; height: calc(var(--rows, 1) * 15px + 19px); }
+.gantt__bar {
+  position: absolute; left: var(--x); width: max(var(--w), 8px);
+  bottom: calc(10px + var(--row) * 15px); height: 9px; border-radius: 4px;
+  background: color-mix(in oklab, var(--fg) 13%, transparent);
+  transition: background-color 250ms var(--ease);
+}
+.gantt__bar::before { content: ""; position: absolute; inset: -8px -5px; }
+.gantt__fill {
+  position: absolute; inset: 0; border-radius: inherit; background: var(--fg);
+  transform: scaleX(var(--k, 0)); transform-origin: 0 50%;
+}
+.gantt__bar.is-hot .gantt__fill { background: var(--accent); }
+.gantt__bar.is-hot { background: color-mix(in oklab, var(--accent) 30%, transparent); }
+.gantt__grid { position: absolute; top: 0; bottom: 1.9rem; left: var(--lab); right: 0; pointer-events: none; }
+.gantt__grid span { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--grid); }
+.gantt__head {
+  position: absolute; top: -0.5rem; bottom: 1.9rem; width: 1px; pointer-events: none;
+  left: calc(var(--lab) + (100% - var(--lab)) * var(--t, 0)); background: var(--fg);
+}
+.gantt__axis { position: relative; margin-left: var(--lab); height: 1.9rem; border-top: 1px solid var(--line); }
+.gantt__axis span {
+  position: absolute; top: 0.45rem; transform: translateX(-50%);
+  font-size: 0.8rem; font-weight: 550; color: var(--fg-soft); font-variant-numeric: tabular-nums;
+}
+.gantt__tip {
+  position: absolute; z-index: 5; pointer-events: none; min-width: 12rem; max-width: 18rem;
+  padding: 0.7rem 0.85rem; border-radius: 10px;
+  background: var(--fg); color: var(--bg); font-size: 0.85rem; line-height: 1.35;
+  box-shadow: 0 10px 30px -12px rgb(15 21 35 / 0.45);
+  transform: translate(-50%, calc(-100% - 12px));
+}
+.gantt__tip strong { display: block; color: inherit; font-size: 0.95rem; }
+.gantt__tip .t-date { font-weight: 650; font-variant-numeric: tabular-nums; }
+.gantt__tip .t-role { opacity: 0.75; }
+
+.journey__list {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem clamp(1.25rem, 2.4vw, 2.5rem);
+  margin-top: clamp(1.5rem, 3.5vh, 2.75rem);
+}
+.jl { display: flex; flex-direction: column; opacity: 0.36; transition: opacity 500ms var(--ease); }
+.jl.is-lit { opacity: 1; }
+.jl__date { font-size: 0.82rem; font-weight: 600; color: var(--fg-soft); font-variant-numeric: tabular-nums; }
+.jl__date .num { font-weight: 700; }
+.jl__name { font-size: 1.02rem; font-weight: 700; font-stretch: 92%; line-height: 1.2; margin-top: 0.15rem; }
+.jl__role { font-size: 0.86rem; color: var(--fg-soft); line-height: 1.3; }
+.jl.is-hot .jl__name { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+@media (max-width: 1200px) { .journey__list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 861px) and (max-height: 880px) {
+  .journey__inner { padding-block: 4.75rem 1.5rem; }
+  .journey .display--md { font-size: clamp(2.4rem, 4.6vw, 4.8rem); }
+  .journey__year { font-size: clamp(3.6rem, 7vw, 7rem); }
+  .gantt { margin-top: 1.25rem; }
+  .journey__list { margin-top: 1.25rem; row-gap: 0.6rem; }
+}
+
+/* ------------------------------------------------ önce / sonra (dumbbell) --
+   Tek eksen, başlangıç = 100. Nokta açık ton: önce, koyu ton: sonra. */
+.shift { position: relative; padding-block: clamp(4rem, 9vw, 8rem) clamp(5rem, 10vw, 9rem); }
+.shift__head { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 1rem 2rem; }
+.shift__title { font-size: clamp(2rem, 4.2vw, 4.2rem); font-weight: 800; font-stretch: 74%; line-height: 0.95; letter-spacing: -0.03em; }
+.shift__sub { grid-column: 1; color: var(--fg-soft); }
+.shift__legend { grid-column: 2; grid-row: 1 / span 2; display: flex; gap: 1.25rem; font-size: 0.9rem; font-weight: 600; color: var(--fg-soft); }
+.shift__legend li { display: inline-flex; align-items: center; gap: 0.45rem; }
+.key { width: 10px; height: 10px; border-radius: 999px; }
+.key--before { background: var(--chart-before); }
+.key--after { background: var(--chart-after); }
+.shift__plot {
+  position: relative; margin-top: clamp(2.5rem, 4.5vw, 3.75rem);
+  display: grid; grid-template-columns: minmax(9rem, 15rem) 1fr; align-items: center; row-gap: 0.6rem;
+}
+.shift__label { font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem); font-weight: 650; padding-right: 1rem; }
+.shift__track {
+  position: relative; height: 5rem; border-radius: 6px; outline-offset: 3px;
+  background: linear-gradient(to right, var(--grid) 1px, transparent 1px) 0 0 / 25% 100% repeat-x;
+  box-shadow: inset -1px 0 0 var(--grid);
+}
+.shift__axis-pad { display: block; }
+.shift__line {
+  position: absolute; top: 50%; height: 2px; margin-top: -1px; border-radius: 2px;
+  left: var(--b); width: calc(var(--a) - var(--b)); background: var(--chart-before);
+}
+.shift__dot {
+  position: absolute; top: 50%; border-radius: 999px; transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+.shift__dot--before { left: var(--b); width: 12px; height: 12px; background: var(--chart-before); }
+.shift__dot--after { left: var(--a); width: 16px; height: 16px; background: var(--chart-after); }
+.shift__value {
+  position: absolute; top: 50%; left: var(--a); transform: translate(1.1rem, -50%);
+  display: inline-flex; align-items: baseline; gap: 0.5rem; white-space: nowrap;
+}
+.shift__value b { font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.6rem); font-weight: 300; font-stretch: 116%; line-height: 1; color: var(--fg); }
+.shift__value span { font-size: 0.95rem; font-weight: 650; color: var(--fg-soft); }
+.shift__track.is-hot { background-color: color-mix(in oklab, var(--fg) 3.5%, transparent); }
+.shift__ref { position: absolute; top: -0.3rem; bottom: -0.3rem; left: var(--b); width: 1px; background: color-mix(in oklab, var(--fg) 38%, transparent); }
+.shift__ref span { position: absolute; bottom: 100%; left: 0; transform: translateX(-50%); padding-bottom: 0.35rem; font-size: 0.78rem; font-weight: 600; color: var(--fg-soft); white-space: nowrap; }
+.shift__ticks { position: relative; height: 2rem; border-top: 1px solid var(--line); }
+.shift__ticks span { position: absolute; top: 0.5rem; transform: translateX(-50%); font-size: 0.8rem; font-weight: 550; color: var(--fg-soft); font-variant-numeric: tabular-nums; }
+.shift__tip {
+  position: absolute; z-index: 5; pointer-events: none; min-width: 11rem;
+  padding: 0.7rem 0.85rem; border-radius: 10px; background: var(--fg); color: var(--bg);
+  font-size: 0.85rem; line-height: 1.45; box-shadow: 0 10px 30px -12px rgb(15 21 35 / 0.45);
+  transform: translate(-50%, calc(-100% - 14px));
+}
+.shift__tip .row { display: flex; align-items: center; gap: 0.5rem; }
+.shift__tip .row b { font-weight: 750; font-variant-numeric: tabular-nums; }
+.shift__tip .lk { width: 12px; height: 2px; border-radius: 2px; }
+.shift__tip .t-name { opacity: 0.75; margin-bottom: 0.2rem; }
+
+/* ----------------------------------------------- oynanabilir kapanış cümlesi -- */
+.play { cursor: grab; touch-action: pan-y; -webkit-user-select: none; user-select: none; }
+.play.is-grab { cursor: grabbing; }
+.play__l { display: inline-block; white-space: pre; will-change: transform; transform-origin: 50% 70%; }
 
 /* ============================================================== MOBİL ===
    Masaüstünün küçültülmüşü değil: film metinleri alt banda, liste ve
    şerit dikey düzene, dokunma hedefleri 44px üstüne geçer.            */
-@media (max-width: 860px) {
+@media (max-width: 1080px) {
   .nav__links { display: none; }
   .nav__toggle { display: inline-flex; align-items: center; }
+}
+
+@media (max-width: 860px) {
 
   .scene--low { left: var(--gutter); right: var(--gutter); max-width: none; bottom: calc(2.4rem + env(safe-area-inset-bottom)); }
   .film__scrim {
@@ -554,3 +776,48 @@ html:not(.js) .film__role, .is-reduced .film__role { position: static; margin-to
 @media (prefers-reduced-motion: reduce) {
   .nav, .roster__name, .program .plate, .close__links a { transition: none; }
 }
+
+/* ------------------------------------------------ yeni bölümler: mobil -- */
+@media (max-width: 860px) {
+  .lang button { min-width: 2.5rem; font-size: 0.85rem; }
+  .journey__inner { padding-block: 4.5rem 3rem; }
+  .journey__head { grid-template-columns: 1fr; }
+  .journey__head > .journey__year { display: none; }
+  .gantt { display: none; }
+  .journey__body { position: relative; margin-top: 2rem; }
+  .journey__year--m {
+    display: block; position: sticky; top: calc(4.5rem + env(safe-area-inset-top)); z-index: 2;
+    font-size: clamp(3rem, 16vw, 4.5rem); padding: 0.4rem 0 0.8rem;
+    background: linear-gradient(var(--bg) 70%, transparent);
+  }
+  .journey__list { display: block; position: relative; padding-left: 1.6rem; margin-top: 0.5rem; }
+  .journey__list::before { content: ""; position: absolute; left: 0.3rem; top: 0.35rem; bottom: 0.5rem; width: 1px; background: var(--line); }
+  .journey__list::after { content: ""; position: absolute; left: 0.3rem; top: 0.35rem; width: 1px; height: var(--fill, 0px); background: var(--fg); }
+  .jl { position: relative; padding-bottom: 1.6rem; opacity: 0.4; }
+  .jl::before {
+    content: ""; position: absolute; left: calc(-1.6rem + 0.3rem - 4.5px); top: 0.3rem; width: 9px; height: 9px;
+    border-radius: 999px; background: var(--bg); box-shadow: inset 0 0 0 1.5px var(--line);
+  }
+  .jl.is-lit::before { background: var(--fg); box-shadow: 0 0 0 2px var(--bg); }
+
+  .flip__text { font-size: 0.95rem; line-height: 1.3; }
+  .flip__back { padding: 0.9rem; }
+  .flip__hint { top: 0.55rem; right: 0.55rem; width: 1.7rem; height: 1.7rem; }
+
+  .shift__head { grid-template-columns: 1fr; }
+  .shift__legend { grid-column: 1; grid-row: auto; }
+  .shift__plot { grid-template-columns: 1fr; row-gap: 0.35rem; }
+  .shift__label { margin-top: 1.1rem; }
+  .shift__axis-pad { display: none; }
+  .shift__track { height: 4.5rem; }
+  .shift__value { transform: translate(-100%, calc(-50% - 1.6rem)); }
+}
+
+/* ------------------------------------------ hareket azaltılmış: yeni parçalar -- */
+.is-reduced .flip__inner { transition: none; transform: none !important; }
+.is-reduced .flip__back { transform: none; opacity: 0; transition: opacity 200ms linear; }
+.is-reduced .flip[aria-pressed="true"] .flip__back { opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .is-reduced .flip:hover .flip__back, .is-reduced .flip:focus-visible .flip__back { opacity: 1; }
+}
+.is-reduced .jl { opacity: 1; }

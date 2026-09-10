@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- LinkedIn / sosyal paylaşım kartı kaynağı (1200x630).
+     Yerel sunucuda açıp 1200x630 pencerede ekran görüntüsü alınır,
+     public/og/og-card.jpg olarak kaydedilir. -->
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>og-card</title>
+<style>
+  @font-face {
+    font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%;
+    src: url("../assets/fonts/archivo-latin-ext.woff2") format("woff2");
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F;
+  }
+  @font-face {
+    font-family: "Archivo"; font-weight: 100 900; font-stretch: 62% 125%;
+    src: url("../assets/fonts/archivo-latin.woff2") format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F;
+  }
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: #0F1523; }
+  .card {
+    position: relative; width: 1200px; height: 630px;
+    background: #0F1523 url("../public/video/poster.jpg") center / cover no-repeat;
+    font-family: "Archivo", sans-serif; color: #E6EDF1;
+  }
+  /* filmdeki ufuk çizgisi: cover yerleşiminde y = 355.5px */
+  .name {
+    position: absolute; left: 72px; bottom: calc(630px - 355.5px + 18px); margin: 0;
+    font-size: 132px; font-weight: 800; font-stretch: 70%; line-height: 0.86; letter-spacing: -0.04em;
+  }
+  .role { position: absolute; left: 72px; top: calc(355.5px + 34px); margin: 0; }
+  .role b { display: block; font-size: 32px; font-weight: 550; letter-spacing: -0.01em; }
+  .role span { display: block; margin-top: 8px; font-size: 24px; font-weight: 450; color: #93A0AE; }
+  .q { position: absolute; left: 72px; top: 64px; margin: 0; font-size: 24px; font-weight: 500; color: #93A0AE; }
+  .url { position: absolute; right: 72px; bottom: 56px; margin: 0; font-size: 22px; font-weight: 600; font-stretch: 100%; color: #7CCBF2; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <p class="q">Bunu nasıl daha iyi yapabiliriz?</p>
+    <h1 class="name">Kıvanç Karademir</h1>
+    <p class="role"><b>Perakende Kanal Satış Yöneticisi, Türk Telekom</b><span>Retail Channel Sales Manager</span></p>
+    <p class="url">kivancsh.github.io</p>
+  </div>
+</body>
+</html>

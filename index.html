@@ -6,17 +6,23 @@
   <title>Kıvanç Karademir | Perakende Kanal Satış Yöneticisi</title>
   <meta name="description" content="Kıvanç Karademir: Türk Telekom’da Perakende Kanal Satış Yöneticisi. Satış, insan, veri ve teknolojiyi bir araya getirerek verimli ve sürdürülebilir sonuçlar üretir.">
   <meta name="theme-color" content="#0F1523">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Kıvanç Karademir">
-  <meta property="og:description" content="Bunu nasıl daha iyi yapabiliriz? Satış, insan, veri ve teknolojinin kesişiminde bir kariyer.">
-  <meta property="og:url" content="https://kivancsh.github.io/">
-  <meta property="og:image" content="https://kivancsh.github.io/public/video/still.jpg">
   <link rel="canonical" href="https://kivancsh.github.io/">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://kivancsh.github.io/">
+  <meta property="og:title" content="Kıvanç Karademir">
+  <meta property="og:description" content="Perakende Kanal Satış Yöneticisi, Türk Telekom. Bunu nasıl daha iyi yapabiliriz?">
+  <meta property="og:image" content="https://kivancsh.github.io/public/og/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Kıvanç Karademir, Perakende Kanal Satış Yöneticisi, Türk Telekom">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1523'/%3E%3Cpath d='M10 40h44' stroke='%237CCBF2' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&display=swap">
+  <!-- Fontlar kendi sunucumuzdan (Archivo, SIL Open Font License) -->
+  <link rel="preload" href="assets/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/archivo-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" as="image" href="public/video/poster.jpg" media="(min-width: 861px)">
   <link rel="preload" as="image" href="public/video/poster-mobile.jpg" media="(max-width: 860px)">
 
@@ -33,7 +39,7 @@
   </script>
 </head>
 <body>
-  <a class="skip" href="#hakkimda">İçeriğe geç</a>
+  <a class="skip" href="#hakkimda" data-i18n="skip">İçeriğe geç</a>
 
   <!-- Açılış perdesi: çizgi video yüklendikçe uzar, sonra filmin ufuk çizgisine dönüşür -->
   <div class="loader" aria-hidden="true">
@@ -43,33 +49,39 @@
 
   <!-- ÜST MENÜ -->
   <header class="nav" data-tone="night">
-    <a class="nav__mark" href="#film" aria-label="Kıvanç Karademir, başa dön">Kıvanç Karademir</a>
-    <nav class="nav__links" aria-label="Bölümler">
-      <a href="#hakkimda">Hakkımda</a>
-      <a href="#stajlar">Stajlar</a>
-      <a href="#egitim-programlari">Eğitim Programları</a>
-      <a href="#is-tecrubeleri">İş Tecrübeleri</a>
-      <a href="#iletisim">İletişim</a>
-    </nav>
-    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu">Menü</button>
+    <a class="nav__mark" href="#film" aria-label="Kıvanç Karademir, başa dön" data-i18n-attr="aria-label:aria.home">Kıvanç Karademir</a>
+    <div class="nav__right">
+      <nav class="nav__links" aria-label="Bölümler" data-i18n-attr="aria-label:aria.sections">
+        <a href="#hakkimda" data-i18n="nav.about">Hakkımda</a>
+        <a href="#stajlar" data-i18n="nav.internships">Stajlar</a>
+        <a href="#egitim-programlari" data-i18n="nav.programs">Eğitim Programları</a>
+        <a href="#is-tecrubeleri" data-i18n="nav.work">İş Tecrübeleri</a>
+        <a href="#iletisim" data-i18n="nav.contact">İletişim</a>
+      </nav>
+      <div class="lang" role="group" aria-label="Dil" data-i18n-attr="aria-label:aria.lang">
+        <button type="button" data-lang="tr" aria-pressed="true" lang="tr">TR</button>
+        <button type="button" data-lang="en" aria-pressed="false" lang="en">EN</button>
+      </div>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-i18n="nav.menu">Menü</button>
+    </div>
   </header>
 
   <div class="menu" id="menu" hidden>
-    <nav aria-label="Mobil menü">
-      <a href="#hakkimda">Hakkımda</a>
-      <a href="#stajlar">Stajlar</a>
-      <a href="#egitim-programlari">Eğitim Programları</a>
-      <a href="#is-tecrubeleri">İş Tecrübeleri</a>
-      <a href="#iletisim">İletişim</a>
+    <nav aria-label="Mobil menü" data-i18n-attr="aria-label:aria.mobileMenu">
+      <a href="#hakkimda" data-i18n="nav.about">Hakkımda</a>
+      <a href="#stajlar" data-i18n="nav.internships">Stajlar</a>
+      <a href="#egitim-programlari" data-i18n="nav.programs">Eğitim Programları</a>
+      <a href="#is-tecrubeleri" data-i18n="nav.work">İş Tecrübeleri</a>
+      <a href="#iletisim" data-i18n="nav.contact">İletişim</a>
     </nav>
-    <button class="menu__close" type="button">Kapat</button>
+    <button class="menu__close" type="button" data-i18n="nav.close">Kapat</button>
   </div>
 
   <main>
     <!-- BÖLÜM 1: SİNEMATİK GİRİŞ
          Kaydırma videonun zamanını sürer. Metinler videonun kendi oynatma
          kafasından okunur; sahne aralıkları assets/js/main.js > SCENES -->
-    <section class="film" id="film" data-sc-act="scrub" data-sc-span="6.4" data-sc-clip-map="travel" data-sc-lerp="0.2" aria-label="Giriş">
+    <section class="film" id="film" data-sc-act="scrub" data-sc-span="6.4" data-sc-clip-map="travel" data-sc-lerp="0.2" aria-label="Giriş" data-i18n-attr="aria-label:aria.intro">
       <div class="film__stage" data-sc-stage>
         <picture>
           <source media="(max-width: 860px)" srcset="public/video/poster-mobile.jpg">
@@ -87,37 +99,37 @@
           <!-- Sahne: Işık -->
           <div class="scene scene--horizon scene--intro" data-scene="intro">
             <h1 class="film__name"><span class="ln"><span class="ln__i">Kıvanç</span></span><span class="ln"><span class="ln__i">Karademir</span></span></h1>
-            <p class="film__role"><span class="ln"><span class="ln__i">Perakende Kanal Satış Yöneticisi</span></span><span class="ln"><span class="ln__i">Türk Telekom</span></span></p>
+            <p class="film__role"><span class="ln"><span class="ln__i" data-i18n="hero.role1">Perakende Kanal Satış Yöneticisi</span></span><span class="ln"><span class="ln__i" data-i18n="hero.role2">Türk Telekom</span></span></p>
           </div>
 
           <!-- Sahne: Soru. İmza hareketi: cümle dağınık girer, video toparlandıkça kendini düzeltir -->
           <div class="scene scene--horizon scene--question" data-scene="soru">
-            <p class="scene__lead"><span class="ln"><span class="ln__i">Beni ileriye taşıyan temel soru</span></span></p>
-            <h2 class="question" aria-label="Bunu nasıl daha iyi yapabiliriz?"><span class="w">Bunu</span> <span class="w">nasıl</span> <span class="w">daha</span> <span class="w">iyi</span> <span class="w">yapabiliriz?</span></h2>
+            <p class="scene__lead"><span class="ln"><span class="ln__i" data-i18n="hero.lead">Beni ileriye taşıyan temel soru</span></span></p>
+            <h2 class="question" aria-label="Bunu nasıl daha iyi yapabiliriz?" data-i18n-attr="aria-label:hero.question"><span class="w">Bunu</span> <span class="w">nasıl</span> <span class="w">daha</span> <span class="w">iyi</span> <span class="w">yapabiliriz?</span></h2>
           </div>
 
           <!-- Sahne: Ağ -->
           <div class="scene scene--low" data-scene="ag">
-            <h2 class="scene__title" data-lines>Satış, insan, veri ve teknoloji.</h2>
-            <p class="scene__text" data-lines><span class="num">70+</span> bayi ve <span class="num">300+</span> personelle perakende kanal performansını yönetiyorum.</p>
+            <h2 class="scene__title" data-lines data-i18n="hero.ag.title">Satış, insan, veri ve teknoloji.</h2>
+            <p class="scene__text" data-lines data-i18n="hero.ag.text"><span class="num">70+</span> bayi ve <span class="num">300+</span> personelle perakende kanal performansını yönetiyorum.</p>
           </div>
 
           <!-- Sahne: Veri -->
           <div class="scene scene--low" data-scene="veri">
-            <h2 class="scene__title" data-lines>Hedeften fazlası.</h2>
-            <p class="scene__text" data-lines>Veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmek.</p>
+            <h2 class="scene__title" data-lines data-i18n="hero.veri.title">Hedeften fazlası.</h2>
+            <p class="scene__text" data-lines data-i18n="hero.veri.text">Veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmek.</p>
           </div>
 
           <!-- Sahne: Eğri. Sayaç eğrinin yükselişiyle aynı anda sayar -->
           <div class="scene scene--low scene--metric" data-scene="egri">
             <p class="scene__figure"><span class="ln"><span class="ln__i num"><span class="pct">%</span><span class="js-hero-count">62</span></span></span></p>
-            <h2 class="scene__title scene__title--sm"><span class="ln"><span class="ln__i">Verimlilik artışı</span></span></h2>
-            <p class="scene__text"><span class="ln"><span class="ln__i">Türk Telekom’da ticari performans</span></span></p>
+            <h2 class="scene__title scene__title--sm"><span class="ln"><span class="ln__i" data-i18n="hero.egri.title">Verimlilik artışı</span></span></h2>
+            <p class="scene__text"><span class="ln"><span class="ln__i" data-i18n="hero.egri.text">Türk Telekom’da ticari performans</span></span></p>
           </div>
 
           <!-- Sahne: Şafak -->
           <div class="scene scene--horizon scene--dawn" data-scene="safak">
-            <p class="scene__title scene__title--dawn" data-lines>Sürekli daha iyisi.</p>
+            <p class="scene__title scene__title--dawn" data-lines data-i18n="hero.safak">Sürekli daha iyisi.</p>
           </div>
         </div>
       </div>
@@ -126,32 +138,54 @@
     <!-- BÖLÜM 2: HAKKIMDA -->
     <section class="about" id="hakkimda" data-tone="day">
       <div class="wrap about__grid">
-        <h2 class="display about__title" data-reveal="lines">Hakkımda</h2>
+        <h2 class="display about__title" data-reveal="lines" data-i18n="about.title">Hakkımda</h2>
 
         <figure class="portrait" aria-label="Kıvanç Karademir">
           <div class="portrait__frame">
-            <img class="portrait__img portrait__img--color" src="public/img/me.jpg" srcset="public/img/me-900.jpg 725w, public/img/me.jpg 1320w" sizes="(max-width: 860px) 88vw, 34vw" alt="Kıvanç Karademir, lacivert takım elbiseyle bir havuz kenarında" width="1320" height="1639" loading="lazy" decoding="async">
+            <img class="portrait__img portrait__img--color" src="public/img/me.jpg" srcset="public/img/me-900.jpg 725w, public/img/me.jpg 1320w" sizes="(max-width: 860px) 88vw, 34vw" alt="Kıvanç Karademir, lacivert takım elbiseyle bir havuz kenarında" data-i18n-attr="alt:about.alt" width="1320" height="1639" loading="lazy" decoding="async">
             <img class="portrait__img portrait__img--mono" src="public/img/me.jpg" srcset="public/img/me-900.jpg 725w, public/img/me.jpg 1320w" sizes="(max-width: 860px) 88vw, 34vw" alt="" width="1320" height="1639" loading="lazy" decoding="async" aria-hidden="true">
           </div>
         </figure>
 
         <div class="about__text">
-          <p class="about__lead" data-reveal="lines">Beni ileriye taşıyan temel soru: <strong>“Bunu nasıl daha iyi yapabiliriz?”</strong></p>
-          <p data-reveal="fade">Türk Telekom’da Satış Yöneticisi olarak; satış, insan, veri ve teknolojiyi bir araya getirerek perakende kanal performansını yönetiyor, mağaza ve bayilerin gelişimine liderlik ediyorum. Hedefleri yalnızca gerçekleştirmeye değil, <strong>veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmeye</strong> odaklanıyorum.</p>
-          <p data-reveal="fade">Analitik bakış açımı güçlü iletişim ve insan odaklı yaklaşımımla birleştirerek performans gelişimi, süreç optimizasyonu ve iş geliştirme alanlarında çözümler üretiyorum.</p>
-          <p data-reveal="fade">Kariyerimi geleceğin teknolojileriyle birlikte şekillendiriyor; <strong>Yapay Zekâ, otomasyon ve dijital dönüşüm</strong> alanlarında kendimi sürekli geliştiriyorum. Amacım teknolojiyi yalnızca kullanmak değil, iş süreçlerine gerçek değer katacak çözümlere dönüştürmek.</p>
-          <p class="about__stance" data-reveal="fade"><strong>Satış, teknoloji ve insanın kesişiminde; girişimci bir bakış açısıyla, sürekli daha iyisini arayarak ilerliyorum.</strong></p>
+          <p class="about__lead" data-reveal="lines" data-i18n="about.lead">Beni ileriye taşıyan temel soru: <strong>“Bunu nasıl daha iyi yapabiliriz?”</strong></p>
+          <p data-reveal="fade" data-i18n="about.p1">Türk Telekom’da Satış Yöneticisi olarak; satış, insan, veri ve teknolojiyi bir araya getirerek perakende kanal performansını yönetiyor, mağaza ve bayilerin gelişimine liderlik ediyorum. Hedefleri yalnızca gerçekleştirmeye değil, <strong>veriye dayalı analizlerle daha verimli ve sürdürülebilir sonuçlar üretmeye</strong> odaklanıyorum.</p>
+          <p data-reveal="fade" data-i18n="about.p2">Analitik bakış açımı güçlü iletişim ve insan odaklı yaklaşımımla birleştirerek performans gelişimi, süreç optimizasyonu ve iş geliştirme alanlarında çözümler üretiyorum.</p>
+          <p data-reveal="fade" data-i18n="about.p3">Kariyerimi geleceğin teknolojileriyle birlikte şekillendiriyor; <strong>Yapay Zekâ, otomasyon ve dijital dönüşüm</strong> alanlarında kendimi sürekli geliştiriyorum. Amacım teknolojiyi yalnızca kullanmak değil, iş süreçlerine gerçek değer katacak çözümlere dönüştürmek.</p>
+          <p class="about__stance" data-reveal="fade" data-i18n="about.stance"><strong>Satış, teknoloji ve insanın kesişiminde; girişimci bir bakış açısıyla, sürekli daha iyisini arayarak ilerliyorum.</strong></p>
         </div>
       </div>
       <div class="wrap">
-        <p class="about__close" data-reveal="lines">Çünkü benim için gelişim bir hedef değil, <strong>sürekli devam eden bir süreç.</strong></p>
+        <p class="about__close" data-reveal="lines" data-i18n="about.close">Çünkü benim için gelişim bir hedef değil, <strong>sürekli devam eden bir süreç.</strong></p>
       </div>
     </section>
 
-    <!-- BÖLÜM 3: STAJLAR (tipografik liste, logolar gerçek dosyalar) -->
+    <!-- BÖLÜM 3: KARİYER YOLCULUĞU
+         Stajlar, programlar ve işler tek bir yıl ekseninde. Masaüstünde bölüm
+         sabitlenir ve kaydırma zaman çizgisini ilerletir. Veri: main.js > TIMELINE -->
+    <section class="journey" id="kariyer-yolculugu" data-tone="day" aria-labelledby="journey-title">
+      <div class="journey__stage">
+        <div class="wrap journey__inner">
+          <div class="journey__head">
+            <div>
+              <h2 class="display display--md" id="journey-title" data-reveal="lines" data-i18n="journey.title">Kariyer Yolculuğu</h2>
+              <p class="journey__lede" data-reveal="fade" data-i18n="journey.lede">Stajlar, eğitim programları ve işler tek bir yıl ekseninde.</p>
+            </div>
+            <p class="journey__year" aria-hidden="true"><span class="js-journey-year">2018</span></p>
+          </div>
+          <div class="gantt" aria-hidden="true"></div>
+          <div class="journey__body">
+            <p class="journey__year journey__year--m" aria-hidden="true"><span class="js-journey-year">2018</span></p>
+            <ol class="journey__list"></ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BÖLÜM 4: STAJLAR (tipografik liste, logolar gerçek dosyalar) -->
     <section class="roster" id="stajlar" data-tone="day">
       <div class="wrap">
-        <h2 class="display" data-reveal="lines">Stajlar</h2>
+        <h2 class="display" data-reveal="lines" data-i18n="internships.title">Stajlar</h2>
         <ol class="roster__list">
           <li class="roster__item" data-reveal="row">
             <span class="plate plate--row"><img src="public/logos/qnb-finansbank.png" alt="" style="--lw: 7.6rem" width="604" height="197" loading="lazy"></span>
@@ -177,35 +211,56 @@
       </div>
     </section>
 
-    <!-- BÖLÜM 4: EĞİTİM PROGRAMLARI (logo levhaları) -->
+    <!-- BÖLÜM 5: EĞİTİM PROGRAMLARI
+         Kartın üstüne gelince (dokunmatikte dokununca) kart döner, arkasında açıklama -->
     <section class="programs" id="egitim-programlari" data-tone="day">
       <div class="wrap">
-        <h2 class="display" data-reveal="lines">Eğitim Programları</h2>
+        <h2 class="display" data-reveal="lines" data-i18n="programs.title">Eğitim Programları</h2>
         <ul class="programs__grid">
           <li class="program" data-reveal="card">
-            <span class="plate plate--tall"><img src="public/logos/turkcell.png" alt="" style="--lw: 11rem" width="1200" height="267" loading="lazy"></span>
-            <span class="program__name">Turkcell</span>
+            <button class="flip" type="button" aria-pressed="false" aria-label="Turkcell" aria-describedby="flip-turkcell">
+              <span class="flip__inner">
+                <span class="flip__face flip__front plate"><img src="public/logos/turkcell.png" alt="" style="--lw: 11rem" width="1200" height="267" loading="lazy"><span class="flip__hint" aria-hidden="true">+</span></span>
+                <span class="flip__face flip__back"><span class="flip__text" id="flip-turkcell" data-i18n="programs.turkcell">Turkcell Akademi ve MIT’den sertifikalı eğitimler aldım. Turkcell için “Üretim Takip Sistemi” projesi geliştirdim.</span><span class="flip__who" aria-hidden="true">Turkcell</span></span>
+              </span>
+            </button>
+            <span class="program__name" aria-hidden="true">Turkcell</span>
           </li>
           <li class="program" data-reveal="card">
-            <span class="plate plate--tall"><img src="public/logos/lc-waikiki.png" alt="" style="--lw: 10.5rem" width="1200" height="209" loading="lazy"></span>
-            <span class="program__name">LC Waikiki</span>
+            <button class="flip" type="button" aria-pressed="false" aria-label="LC Waikiki" aria-describedby="flip-lcw">
+              <span class="flip__inner">
+                <span class="flip__face flip__front plate"><img src="public/logos/lc-waikiki.png" alt="" style="--lw: 10.5rem" width="1200" height="209" loading="lazy"><span class="flip__hint" aria-hidden="true">+</span></span>
+                <span class="flip__face flip__back"><span class="flip__text" id="flip-lcw" data-i18n="programs.lcw">LC Waikiki Akademi Teknoloji ve Dijitalleşmeye Giriş Programı</span><span class="flip__who" aria-hidden="true">LC Waikiki</span></span>
+              </span>
+            </button>
+            <span class="program__name" aria-hidden="true">LC Waikiki</span>
           </li>
           <li class="program" data-reveal="card">
-            <span class="plate plate--tall"><img src="public/logos/loreal.png" alt="" style="--lw: 10.5rem" width="800" height="146" loading="lazy"></span>
-            <span class="program__name">L’Oréal</span>
+            <button class="flip" type="button" aria-pressed="false" aria-label="L’Oréal" aria-describedby="flip-loreal">
+              <span class="flip__inner">
+                <span class="flip__face flip__front plate"><img src="public/logos/loreal.png" alt="" style="--lw: 10.5rem" width="800" height="146" loading="lazy"><span class="flip__hint" aria-hidden="true">+</span></span>
+                <span class="flip__face flip__back"><span class="flip__text" id="flip-loreal" data-i18n="programs.loreal">L'Oréal İle Benim Geleceğim Eğitim Programı | Mentee 6 Ay</span><span class="flip__who" aria-hidden="true">L’Oréal</span></span>
+              </span>
+            </button>
+            <span class="program__name" aria-hidden="true">L’Oréal</span>
           </li>
           <li class="program" data-reveal="card">
-            <span class="plate plate--tall"><img src="public/logos/pg.png" alt="" style="--lw: 7.4rem" width="1200" height="547" loading="lazy"></span>
-            <span class="program__name">P&amp;G VIA</span>
+            <button class="flip" type="button" aria-pressed="false" aria-label="P&amp;G VIA" aria-describedby="flip-pg">
+              <span class="flip__inner">
+                <span class="flip__face flip__front plate"><img src="public/logos/pg.png" alt="" style="--lw: 7.4rem" width="1200" height="547" loading="lazy"><span class="flip__hint" aria-hidden="true">+</span></span>
+                <span class="flip__face flip__back"><span class="flip__text" id="flip-pg" data-i18n="programs.pg">P&amp;G’nin Globaldeki VIA eğitim programına seçildim ve P&amp;G sertifikalı kişisel gelişim eğitimleri aldım.</span><span class="flip__who" aria-hidden="true">P&amp;G VIA</span></span>
+              </span>
+            </button>
+            <span class="program__name" aria-hidden="true">P&amp;G VIA</span>
           </li>
         </ul>
       </div>
     </section>
 
-    <!-- BÖLÜM 5: İŞ TECRÜBELERİ -->
+    <!-- BÖLÜM 6: İŞ TECRÜBELERİ -->
     <section class="work" id="is-tecrubeleri" data-tone="day">
       <div class="wrap">
-        <h2 class="display" data-reveal="lines">İş Tecrübeleri</h2>
+        <h2 class="display" data-reveal="lines" data-i18n="work.title">İş Tecrübeleri</h2>
 
         <!-- İŞ 1: YILDIZ HOLDING -->
         <article class="job job--yildiz">
@@ -214,16 +269,16 @@
           </div>
           <div class="job__main">
             <h3 class="job__company" data-reveal="lines">Yıldız Holding</h3>
-            <p class="job__meta" data-reveal="fade"><span>Penta Teknoloji</span><span>İş Geliştirme Uzmanı</span><span class="num num--sm">2023-2024</span></p>
-            <p class="job__text" data-reveal="fade">Yıldız Holding’in sahibi olduğu Penta Teknoloji’de 2023-2024 yıllarında İş Geliştirme Uzmanı olarak; IBM Software ürünlerinin (ESA, SaaS, Cloud, On Prem vb.) satışından sorumluydum. 25’ten fazla account’a sahip olup bu account’larla düzenli ziyaretler, pipeline takipleri ve proje yönetimi yaptık. 500.000 TL’den fazla satış ile sürecimi tamamladım.</p>
+            <p class="job__meta" data-reveal="fade"><span>Penta Teknoloji</span><span data-i18n="work.yildiz.role">İş Geliştirme Uzmanı</span><span class="num num--sm">2023-2024</span></p>
+            <p class="job__text" data-reveal="fade" data-i18n="work.yildiz.text">Yıldız Holding’in sahibi olduğu Penta Teknoloji’de 2023-2024 yıllarında İş Geliştirme Uzmanı olarak; IBM Software ürünlerinin (ESA, SaaS, Cloud, On Prem vb.) satışından sorumluydum. 25’ten fazla account’a sahip olup bu account’larla düzenli ziyaretler, pipeline takipleri ve proje yönetimi yaptık. 500.000 TL’den fazla satış ile sürecimi tamamladım.</p>
             <dl class="figures" data-reveal="fade">
               <div class="figure">
-                <dt class="figure__label">Account</dt>
+                <dt class="figure__label" data-i18n="work.fig.accounts">Account</dt>
                 <dd class="figure__value num" data-count="25" data-suffix="+">25+</dd>
               </div>
               <div class="figure">
-                <dt class="figure__label">Satış</dt>
-                <dd class="figure__value num" data-count="500000" data-suffix="+" data-unit="TL">500.000+<span class="unit">TL</span></dd>
+                <dt class="figure__label" data-i18n="work.fig.sales">Satış</dt>
+                <dd class="figure__value num" data-count="500000" data-suffix="+">500.000+<span class="unit" data-i18n="unit.tl">TL</span></dd>
               </div>
             </dl>
           </div>
@@ -236,65 +291,80 @@
           </div>
           <div class="job__main">
             <h3 class="job__company" data-reveal="lines">Türk Telekom</h3>
-            <p class="job__meta" data-reveal="fade"><span>Perakende Kanal Satış Yöneticisi</span><span>Halen</span></p>
-            <p class="job__text" data-reveal="fade">Perakende Kanal Satış Yöneticisi olarak çalışmaya devam ederken özellikle Ticari Performans alanında sunduğum verimlilik ve optimizasyonla öne çıktım.</p>
+            <p class="job__meta" data-reveal="fade"><span data-i18n="work.tt.role">Perakende Kanal Satış Yöneticisi</span><span data-i18n="work.tt.current">Halen</span></p>
+            <p class="job__text" data-reveal="fade" data-i18n="work.tt.text">Perakende Kanal Satış Yöneticisi olarak çalışmaya devam ederken özellikle Ticari Performans alanında sunduğum verimlilik ve optimizasyonla öne çıktım.</p>
           </div>
         </article>
       </div>
 
       <!-- Türk Telekom metrikleri. Masaüstünde yatay şerit (kaydırmayla yana akar), mobilde gruplu liste -->
-      <div class="ledger" id="ticari-performans" aria-label="Türk Telekom ticari performans metrikleri">
+      <div class="ledger" id="ticari-performans" aria-label="Türk Telekom ticari performans metrikleri" data-i18n-attr="aria-label:aria.ledger">
         <div class="ledger__stage">
           <div class="ledger__rail">
             <div class="ledger__intro">
-              <p class="ledger__kicker">Ticari Performans</p>
-              <p class="ledger__lede">Dokuz metrik, üç başlık altında: sahadaki ölçek, verimlilik ve optimizasyon, ticari sonuç.</p>
+              <p class="ledger__kicker" data-i18n="ledger.kicker">Ticari Performans</p>
+              <p class="ledger__lede" data-i18n="ledger.lede">Dokuz metrik, üç başlık altında: sahadaki ölçek, verimlilik ve optimizasyon, ticari sonuç.</p>
             </div>
 
             <section class="group" aria-labelledby="g-saha">
-              <h4 class="group__title" id="g-saha">Saha ve ekip</h4>
+              <h4 class="group__title" id="g-saha" data-i18n="ledger.g1">Saha ve ekip</h4>
               <ul class="group__list">
-                <li class="metric"><span class="metric__value num" data-count="70" data-suffix="+">70+</span><span class="metric__label">Bayi Yönetimi</span></li>
-                <li class="metric"><span class="metric__value num" data-count="300" data-suffix="+">300+</span><span class="metric__label">Personel Takibi</span></li>
-                <li class="metric"><span class="metric__value num" data-count="15" data-suffix="+">15+</span><span class="metric__label">Aylık Saha Ziyareti</span></li>
+                <li class="metric"><span class="metric__value num" data-count="70" data-suffix="+">70+</span><span class="metric__label" data-i18n="m.dealers">Bayi Yönetimi</span></li>
+                <li class="metric"><span class="metric__value num" data-count="300" data-suffix="+">300+</span><span class="metric__label" data-i18n="m.staff">Personel Takibi</span></li>
+                <li class="metric"><span class="metric__value num" data-count="15" data-suffix="+">15+</span><span class="metric__label" data-i18n="m.visits">Aylık Saha Ziyareti</span></li>
               </ul>
             </section>
 
             <section class="group" aria-labelledby="g-verim">
-              <h4 class="group__title" id="g-verim">Verimlilik ve optimizasyon</h4>
+              <h4 class="group__title" id="g-verim" data-i18n="ledger.g2">Verimlilik ve optimizasyon</h4>
               <ul class="group__list">
-                <li class="metric metric--lead"><span class="metric__value num" data-count="62" data-prefix="%">%62</span><span class="metric__label">Verimlilik Artışı</span></li>
-                <li class="metric"><span class="metric__value num" data-count="92" data-prefix="%">%92</span><span class="metric__label">Ekip Hedef Gerçekleştirme Oranı</span></li>
-                <li class="metric"><span class="metric__value num" data-count="38" data-prefix="%">%38</span><span class="metric__label">Tüm Ürünlerde Büyüme</span></li>
+                <li class="metric metric--lead"><span class="metric__value num" data-count="62" data-pct>%62</span><span class="metric__label" data-i18n="m.eff">Verimlilik Artışı</span></li>
+                <li class="metric"><span class="metric__value num" data-count="92" data-pct>%92</span><span class="metric__label" data-i18n="m.target">Ekip Hedef Gerçekleştirme Oranı</span></li>
+                <li class="metric"><span class="metric__value num" data-count="38" data-pct>%38</span><span class="metric__label" data-i18n="m.growth">Tüm Ürünlerde Büyüme</span></li>
               </ul>
             </section>
 
             <section class="group" aria-labelledby="g-sonuc">
-              <h4 class="group__title" id="g-sonuc">Ticari sonuç</h4>
+              <h4 class="group__title" id="g-sonuc" data-i18n="ledger.g3">Ticari sonuç</h4>
               <ul class="group__list">
-                <li class="metric metric--lead"><span class="metric__value num">1.</span><span class="metric__label">Cihaz Satış Kampanyasında Türkiye 1.’liği</span></li>
-                <li class="metric metric--wide"><span class="metric__value num" data-count="300000" data-suffix="+" data-unit="TL">300.000+<span class="unit">TL</span></span><span class="metric__label">Ek Satış Hacmi</span></li>
-                <li class="metric metric--wide"><span class="metric__value num" data-count="700000" data-suffix="+" data-unit="TL">700.000+<span class="unit">TL</span></span><span class="metric__label">Ek Ciro Katkısı</span></li>
+                <li class="metric metric--lead"><span class="metric__value num" data-i18n="m.rank">1.</span><span class="metric__label" data-i18n="m.rankLabel">Cihaz Satış Kampanyasında Türkiye 1.’liği</span></li>
+                <li class="metric metric--wide"><span class="metric__value num" data-count="300000" data-suffix="+">300.000+<span class="unit" data-i18n="unit.tl">TL</span></span><span class="metric__label" data-i18n="m.addSales">Ek Satış Hacmi</span></li>
+                <li class="metric metric--wide"><span class="metric__value num" data-count="700000" data-suffix="+">700.000+<span class="unit" data-i18n="unit.tl">TL</span></span><span class="metric__label" data-i18n="m.addRevenue">Ek Ciro Katkısı</span></li>
               </ul>
             </section>
           </div>
         </div>
       </div>
+
+      <!-- Önce / sonra grafiği: aynı eksende, başlangıç = 100. Veri: main.js > SHIFT -->
+      <figure class="shift wrap" aria-labelledby="shift-title">
+        <div class="shift__head">
+          <h3 class="shift__title" id="shift-title" data-reveal="lines" data-i18n="chart.title">Önce ve sonra</h3>
+          <p class="shift__sub" data-i18n="chart.sub">Türk Telekom perakende kanalı. Endeks: başlangıç = 100.</p>
+          <ul class="shift__legend" aria-hidden="true">
+            <li><span class="key key--before"></span><span data-i18n="chart.before">Önce</span></li>
+            <li><span class="key key--after"></span><span data-i18n="chart.after">Sonra</span></li>
+          </ul>
+        </div>
+        <div class="shift__plot" data-reveal="shift"></div>
+        <div class="shift__tip" role="status" aria-live="polite" hidden></div>
+        <table class="sr-only shift__table"></table>
+      </figure>
     </section>
 
-    <!-- BÖLÜM 6: KAPANIŞ -->
+    <!-- BÖLÜM 7: İLETİŞİM (kapanış). Cümle fareyle dağılır, bırakınca yeniden dizilir -->
     <section class="close" id="iletisim" data-tone="day">
       <div class="wrap">
-        <p class="close__q" data-reveal="lines">Bunu nasıl daha iyi yapabiliriz?</p>
+        <h2 class="close__q play" data-i18n="close.title">İletişimde Kalalım!</h2>
         <div class="close__line" aria-hidden="true"></div>
         <div class="close__row">
-          <p class="close__note" data-reveal="fade">Bir sonraki soruyu birlikte soralım.</p>
+          <p class="close__note" data-reveal="fade" data-i18n="close.note">Bir sonraki soruyu birlikte soralım.</p>
           <ul class="close__links" data-contact hidden></ul>
         </div>
       </div>
       <footer class="foot wrap">
         <span>© <span class="num num--plain">2026</span> Kıvanç Karademir</span>
-        <a href="#film" class="foot__top">Başa dön</a>
+        <a href="#film" class="foot__top" data-i18n="foot.top">Başa dön</a>
       </footer>
     </section>
   </main>
@@ -302,6 +372,7 @@
   <div class="grain" aria-hidden="true"></div>
 
   <script src="assets/js/scrollcraft.js" defer></script>
+  <script src="assets/js/i18n.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 </body>
 </html>

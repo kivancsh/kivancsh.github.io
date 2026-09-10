@@ -15,6 +15,9 @@
 - `public/video/`: `hero.mp4` (1920x1080), `hero-mobile.mp4` (720x1280), afiş kareleri
 - `public/img/`: portre, `public/logos/`: şirket logoları
 - `tools/*.swift`: filmi, logoları ve paleti üreten araçlar (makinede node ve ffmpeg yok, Swift var)
+- `assets/js/i18n.js`: İngilizce metinler; Türkçe asıl kaynak `index.html` (`data-i18n` anahtarları)
+- `assets/fonts/`: Archivo woff2 (latin + latin-ext), harici font isteği yok
+- `public/cv/`, `public/og/`: CV ve LinkedIn paylaşım kartı (`tools/og-card.html` kaynağı)
 - `docs/`: brief, tasarım DNA'sı, sahne kurgusu
 - `.nojekyll`: GitHub Pages dosyaları olduğu gibi sunsun
 
@@ -36,6 +39,8 @@ python3 -m http.server 4500 --bind 127.0.0.1
 - Görünür metinde uzun tire (— ya da –) kullanılmaz; tarih aralıkları kısa tireyle (2023-2024)
 - Film metinleri `SCENES` aralıklarına bağlıdır; video değişirse aralıklar da güncellenir
 - E-posta kaynakta düz yazılmaz; `CONTACT` içinde iki parçadan birleştirilir
+- Her yeni görünür metin iki dilde: Türkçesi HTML'de, İngilizcesi `i18n.js` içinde
+- Kariyer yolculuğu tarihleri LinkedIn profilinden; P&G VIA tarihi eksik (kullanıcıdan alınacak)
 
 ## Kurallar
 

@@ -51,12 +51,14 @@
   var FILM = { desktop: { w: 1920, h: 1080, horizon: 0.56 }, mobile: { w: 720, h: 1280, horizon: 0.40 } };
 
   // Kariyer yolculuğu. Kaynak: LinkedIn profili. Ay biçimi 'YYYY-AA', to: null = bugün.
-  // P&G VIA'nın tarihi eklenince aynı biçimde buraya (type: 'program').
+  // Yalnızca yılı bilinen kayıt 'YYYY' yazılır: listede yıl görünür, süre yazılmaz,
+  // çizelgede o yılı kapsayan ince bir aralık çizgisi olarak çizilir (belirli ay iddia etmez).
   var TIMELINE = [
     { id: 'dau', type: 'edu', from: '2018-09', to: '2023-07', name: { tr: 'Doğu Akdeniz Üniversitesi', en: 'Eastern Mediterranean University' }, role: { tr: 'Endüstri Mühendisliği, lisans', en: 'B.Eng., Industrial Engineering' } },
     { id: 'turkcell', type: 'program', from: '2021-01', to: '2021-02', name: 'Turkcell', role: { tr: 'Satış ve Pazarlama', en: 'Sales & Marketing' } },
     { id: 'qnb', type: 'intern', from: '2021-08', to: '2021-08', name: 'QNB Finansbank', role: { tr: 'Finans Stajyeri', en: 'Finance Intern' } },
     { id: 'vodafone', type: 'intern', from: '2021-09', to: '2021-11', name: 'Vodafone', role: { tr: 'Dijital Pazarlama Stajyeri', en: 'Digital Marketing Intern' } },
+    { id: 'pg', type: 'program', from: '2022', to: '2022', name: 'P&G VIA', role: { tr: 'Global VIA eğitim programı', en: 'Global VIA training program' } },
     { id: 'sampa', type: 'intern', from: '2022-02', to: '2022-02', name: 'SAMPA', role: { tr: 'Metot Geliştirme Birimi Stajyeri', en: 'Method Development Unit Intern' } },
     { id: 'lcw', type: 'program', from: '2022-02', to: '2022-03', name: 'LC Waikiki', role: { tr: 'Teknoloji ve Dijitalleşmeye Giriş Programı', en: 'Introduction to Technology and Digitalization' } },
     { id: 'loreal', type: 'program', from: '2022-02', to: '2022-07', name: 'L’Oréal', role: { tr: 'L’Oréal İle Benim Geleceğim, Mentee', en: 'My Future with L’Oréal, Mentee' } },
@@ -222,11 +224,13 @@
   var jList = $('.journey__list');
   var jYears = $$('.js-journey-year');
   var NOW = (function () { var d = new Date(); return d.getFullYear() + d.getMonth() / 12 + (d.getDate() - 1) / 365; })();
-  function ym(s) { var p = s.split('-'); return +p[0] + (+p[1] - 1) / 12; }
+  function yearOnly(d) { return /^\d{4}$/.test(d.from); }
+  function ym(s) { var p = s.split('-'); return +p[0] + (p.length > 1 ? (+p[1] - 1) / 12 : 0); }
   var AX0 = 2018.5, AX1 = Math.max(NOW + 0.3, 2026.5);
   function xPct(t) { return (t - AX0) / (AX1 - AX0) * 100; }
   var jItems = TIMELINE.map(function (d) {
-    return { d: d, s: ym(d.from), e: d.to ? ym(d.to) + 1 / 12 : NOW, row: 0, k: -1, lit: null };
+    var e = !d.to ? NOW : yearOnly(d) ? ym(d.to) + 1 : ym(d.to) + 1 / 12;
+    return { d: d, s: ym(d.from), e: e, row: 0, k: -1, lit: null };
   });
   var laneRows = {};
   LANES.forEach(function (lane) {
@@ -247,12 +251,16 @@
     var mf = new Intl.DateTimeFormat(locale(), { month: 'short' });
     var f = d.from.split('-').map(Number), t = d.to ? d.to.split('-').map(Number) : null;
     function mn(a) { return mf.format(new Date(a[0], a[1] - 1, 1)).replace(/\.$/, ''); }
+    if (yearOnly(d)) {
+      return t && t[0] !== f[0] ? [[String(f[0]), 1], [' - ', 0], [String(t[0]), 1]] : [[String(f[0]), 1]];
+    }
     if (!t) return [[mn(f) + ' ', 0], [String(f[0]), 1], [' - ' + ui('present'), 0]];
     if (f[0] === t[0] && f[1] === t[1]) return [[mn(f) + ' ', 0], [String(f[0]), 1]];
     if (f[0] === t[0]) return [[mn(f) + ' - ' + mn(t) + ' ', 0], [String(f[0]), 1]];
     return [[mn(f) + ' ', 0], [String(f[0]), 1], [' - ' + mn(t) + ' ', 0], [String(t[0]), 1]];
   }
   function durationOf(d) {
+    if (yearOnly(d)) return '';
     var f = d.from.split('-').map(Number), t;
     if (d.to) t = d.to.split('-').map(Number);
     else { var n = new Date(); t = [n.getFullYear(), n.getMonth() + 1]; }
@@ -266,7 +274,8 @@
     dateParts(d).forEach(function (p) {
       target.appendChild(p[1] ? el('span', 'num', p[0]) : document.createTextNode(p[0]));
     });
-    if (withDuration) target.appendChild(document.createTextNode(' · ' + durationOf(d)));
+    var dur = withDuration ? durationOf(d) : '';
+    if (dur) target.appendChild(document.createTextNode(' · ' + dur));
   }
 
   function buildJourney() {
@@ -285,7 +294,7 @@
       track.style.setProperty('--rows', laneRows[lane]);
       jItems.forEach(function (it) {
         if (it.d.type !== lane) return;
-        var bar = el('span', 'gantt__bar');
+        var bar = el('span', yearOnly(it.d) ? 'gantt__bar gantt__bar--range' : 'gantt__bar');
         bar.style.setProperty('--x', xPct(it.s) + '%');
         bar.style.setProperty('--w', 'calc(' + (xPct(it.e) - xPct(it.s)).toFixed(3) + '% - 2px)');
         bar.style.setProperty('--row', it.row);

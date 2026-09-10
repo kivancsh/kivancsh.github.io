@@ -54,7 +54,7 @@ E-posta kaynakta düz yazılmaz, iki parçadan birleştirilir. Bağlantılar kap
 **Dil:** sağ üstteki TR / EN. Seçim tarayıcıda hatırlanır; `?lang=en` ile doğrudan İngilizce açılır.
 
 **Kariyer yolculuğu:** `assets/js/main.js` > `TIMELINE`. Tarihler LinkedIn profilinden alındı.
-P&G VIA'nın tarihi eksik; aynı biçimde (`type: 'program'`) eklenince çizelgede görünür.
+Ayı bilinmeyen kayıt yalnızca yılla yazılır (`from: '2022'`); P&G VIA böyle, 2022.
 
 **CV'yi güncellemek:** yeni dosyayı `public/cv/Kivanc-Karademir-CV.pdf` adıyla değiştir.
 

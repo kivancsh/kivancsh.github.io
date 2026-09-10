@@ -40,7 +40,7 @@ python3 -m http.server 4500 --bind 127.0.0.1
 - Film metinleri `SCENES` aralıklarına bağlıdır; video değişirse aralıklar da güncellenir
 - E-posta kaynakta düz yazılmaz; `CONTACT` içinde iki parçadan birleştirilir
 - Her yeni görünür metin iki dilde: Türkçesi HTML'de, İngilizcesi `i18n.js` içinde
-- Kariyer yolculuğu tarihleri LinkedIn profilinden; P&G VIA tarihi eksik (kullanıcıdan alınacak)
+- Kariyer yolculuğu tarihleri LinkedIn profilinden; P&G VIA yalnızca yıl olarak biliniyor (2022)
 
 ## Kurallar
 

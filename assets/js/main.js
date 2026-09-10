@@ -11,7 +11,7 @@
      5. İmza hareketi: "Bunu nasıl daha iyi yapabiliriz?" kendini düzeltir
      6. Kariyer yolculuğu: tek yıl ekseni, kaydırdıkça ilerleyen oynatma çizgisi
      7. Önce / sonra grafiği, dönen kartlar, oynanabilir kapanış cümlesi
-     8. Bölüm açılımları, portre, sayaçlar, menü, iletişim, ziyaretçi sayacı
+     8. Bölüm açılımları, portre, sayaçlar, menü, iletişim
    ========================================================================== */
 (function () {
   'use strict';
@@ -25,11 +25,6 @@
     linkedin: 'https://www.linkedin.com/in/alperenk%C4%B1van%C3%A7karademir/'
   };
   var CV_URL = 'public/cv/Kivanc-Karademir-CV.pdf';
-
-  // Ziyaretçi sayacı (GoatCounter). goatcounter.com'da ücretsiz hesap açıp
-  // seçtiğin kodu buraya yaz (ör. 'kivanc'). Panel yalnızca senin hesabınla açılır.
-  // Kendi ziyaretlerini saydırmamak için siteyi bir kez ?sayac=kapat ile aç.
-  var ANALYTICS = { goatcounter: '' };
 
   // Film zaman çizelgesi (0..1). tools/film.swift içindeki sahnelerle aynı.
   // [giriş başlar, tam görünür, çıkış başlar, tamamen çıktı]
@@ -1104,21 +1099,6 @@
   $$('.lang button').forEach(function (b) {
     b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); });
   });
-
-  /* ------------------------------------------------ ziyaretçi sayacı ----- */
-  (function () {
-    if (!ANALYTICS.goatcounter) return;
-    try {
-      if (/[?&]sayac=kapat\b/.test(location.search)) localStorage.setItem('kk-no-count', '1');
-      if (/[?&]sayac=ac\b/.test(location.search)) localStorage.removeItem('kk-no-count');
-      if (localStorage.getItem('kk-no-count')) return;
-    } catch (e) {}
-    var s = document.createElement('script');
-    s.async = true;
-    s.src = 'https://gc.zgo.at/count.js';
-    s.setAttribute('data-goatcounter', 'https://' + ANALYTICS.goatcounter + '.goatcounter.com/count');
-    document.head.appendChild(s);
-  })();
 
   /* ------------------------------------------------ yeniden düzen ------ */
   var lastW = innerWidth;

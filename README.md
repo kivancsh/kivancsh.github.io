@@ -31,7 +31,7 @@ Dosyayı çift tıklayıp açmak (`file://`) videoyu yüklemez; mutlaka bir sunu
 |---|---|
 | `index.html` | Sayfanın tamamı (metinler burada) |
 | `assets/css/main.css` | Tasarım: renkler, tipografi, bölümler, mobil |
-| `assets/js/main.js` | Koreografi ve ayarlar: `CONTACT`, `CV_URL`, `ANALYTICS`, `SCENES`, `TIMELINE`, `SHIFT` |
+| `assets/js/main.js` | Koreografi ve ayarlar: `CONTACT`, `CV_URL`, `SCENES`, `TIMELINE`, `SHIFT` |
 | `assets/js/i18n.js` | İngilizce metinler (Türkçeler `index.html` içinde) |
 | `assets/fonts/` | Archivo (SIL Open Font License), kendi sunucumuzdan |
 | `assets/js/scrollcraft.js`, `assets/css/scrollcraft.css` | Kaydırma motoru (değiştirilmez) |
@@ -57,12 +57,6 @@ E-posta kaynakta düz yazılmaz, iki parçadan birleştirilir. Bağlantılar kap
 P&G VIA'nın tarihi eksik; aynı biçimde (`type: 'program'`) eklenince çizelgede görünür.
 
 **CV'yi güncellemek:** yeni dosyayı `public/cv/Kivanc-Karademir-CV.pdf` adıyla değiştir.
-
-**Ziyaretçi sayacı (GoatCounter):** https://www.goatcounter.com adresinde ücretsiz hesap aç,
-bir kod seç (ör. `kivanc`), `assets/js/main.js` içinde `ANALYTICS.goatcounter` değerine yaz.
-Panel yalnızca senin hesabınla açılır; ziyaret zamanı, geldiği yer (ör. LinkedIn), ülke ve cihaz
-görünür, kişinin kimliği görünmez (çerez kullanmaz). Kendi ziyaretlerini saydırmamak için siteyi
-bir kez `?sayac=kapat` ile aç (geri açmak için `?sayac=ac`).
 
 **Paylaşım kartı:** kaynağı `tools/og-card.html`. Değiştirirsen yerel sunucuda 1200x630 pencerede
 açıp görüntüsünü `public/og/og-card.jpg` olarak kaydet. LinkedIn eski önizlemeyi önbellekte
